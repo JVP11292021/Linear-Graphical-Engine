@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.0.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>330</x>
+      <y>430</y>
+      <w>410</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>GlTexture
+--
+-localbuffer: uint8_ptr
+-width, height bbp: int32
+--
++GlTexture(const string)
+~GlTexture()
++bind() const: void = 0 &lt;&lt;override&gt;&gt;
++unbind() const: void = 0 &lt;&lt;override&gt;&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>530</x>
+      <y>330</y>
+      <w>30</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;100.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>330</x>
+      <y>130</y>
+      <w>410</w>
+      <h>210</h>
+    </coordinates>
+    <panel_attributes>/Texture/
+--
+#ID: uint32
+#path: string
+--
+~Texture() &lt;&lt;virtual&gt;&gt;
++bind() const: void = 0 &lt;&lt;virtual&gt;&gt;
++unbind() const: void = 0 &lt;&lt;virtual&gt;&gt;
++create(): Texture* &lt;&lt;static&gt;&gt;
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

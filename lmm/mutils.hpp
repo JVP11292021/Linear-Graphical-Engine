@@ -1,0 +1,26 @@
+#pragma once
+
+enum class mat_qualifier {
+	NONE = -1,
+	MAT2X2 = 22,
+	MAT3X3 = 33,
+	Mat4X4 = 44,
+	MAT2X3 = 23,
+	MAT2X4 = 24,
+	MAT3X2 = 32,
+	MAT3X4 = 34,
+	MAT4X2 = 42,
+	MAT4X3 = 43
+};
+
+#define LMM_MAT_TOPLEFT_ALLIGN					0x0010
+#define LMM_MAT_TOPRIGHT_ALLIGN					0x0020
+#define LMM_MAT_BOTRIGHT_ALLIGN					0x0030
+#define LMM_MAT_BOTLEFT_ALLIGN					0x0040
+#define LMM_MAT_MIDDLE_ALLIGN					0x0050
+#define LMM_MAT_MIDDLELEFT_ALLIGN				0x0060
+#define LMM_MAT_MIDDLERIGHT_ALLIGN				0x0070
+
+
+
+

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.0.0">
+  <zoom_level>7</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>322</x>
+      <y>308</y>
+      <w>357</w>
+      <h>273</h>
+    </coordinates>
+    <panel_attributes>GlShader
+--
+- cache: unordered_map
+--
+-parse(string): Tuple
+-compile(uint32, istr): uint32
+-create(istr, istr, istr = null): uint32
+-uniformLocation(istr): int32
+--
++GlSahder(string)
++GlShader(istr, istr, istr = null)
+~GlShader()
+
++setBool(const string, bool): void &lt;&lt;override&gt;&gt;
++setInt(const string, int32): void &lt;&lt;override&gt;&gt;
++setFloat(const string, f32): void &lt;&lt;override&gt;&gt;
++setVec2(const string, const vec2): void &lt;&lt;override&gt;&gt;
++setVec2(const string, f32 x, f32 y): void &lt;&lt;override&gt;&gt;
++setVec3(const string, const vec3): void &lt;&lt;override&gt;&gt;
++setVec3(const string, f32 x, f32 y, f32 z): void &lt;&lt;override&gt;&gt;
++setVec4(const string, const vec4): void &lt;&lt;override&gt;&gt;
++etVec4(const string, f32 x, f32 y, f32 z, f32 w): void &lt;&lt;override&gt;&gt;
++setMat2(const string, const mat2f): void &lt;&lt;override&gt;&gt;
++setMat3(const string, const mat3f): void &lt;&lt;override&gt;&gt;
++setMat4(const string, const mat4f): void &lt;&lt;override&gt;&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>322</x>
+      <y>0</y>
+      <w>357</w>
+      <h>231</h>
+    </coordinates>
+    <panel_attributes>/Shader/
+--
+#ID: uint32
+--
+~Shader() &lt;&lt;virtual&gt;&gt;
++bind() const: void = 0 &lt;&lt;virtual&gt;&gt;
++unbind() const: void = 0 &lt;&lt;virtual&gt;&gt;
++create(string): Shader* &lt;&lt;static&gt;&gt;
++create(istr, istr, istr = null): Shader* &lt;&lt;static&gt;&gt;
++setBool(const string, bool): void &lt;&lt;virtual&gt;&gt;
++setInt(const string, int32): void &lt;&lt;virtual&gt;&gt;
++setFloat(const string, f32): void &lt;&lt;virtual&gt;&gt;
++setVec2(const string, const vec2): void &lt;&lt;virtual&gt;&gt;
++setVec2(const string, f32 x, f32 y): void &lt;&lt;virtual&gt;&gt;
++setVec3(const string, const vec3): void &lt;&lt;virtual&gt;&gt;
++setVec3(const string, f32 x, f32 y, f32 z): void &lt;&lt;virtual&gt;&gt;
++setVec4(const string, const vec4): void &lt;&lt;virtual&gt;&gt;
++etVec4(const string, f32 x, f32 y, f32 z, f32 w): void &lt;&lt;virtual&gt;&gt;
++setMat2(const string, const mat2f): void &lt;&lt;virtual&gt;&gt;
++setMat3(const string, const mat3f): void &lt;&lt;virtual&gt;&gt;
++setMat4(const string, const mat4f): void &lt;&lt;virtual&gt;&gt;
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>497</x>
+      <y>224</y>
+      <w>21</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;120.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>245</x>
+      <y>693</y>
+      <w>147</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enum class&gt;&gt;
+GlShaderDataTypes
+--
+None = -1
+Float8, Float32, Float64
+vec2, vec3, vec4
+Int8, Int32, Int64
+Bool,
+mat2, mat3, mat4</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>406</x>
+      <y>693</y>
+      <w>147</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enum class&gt;&gt;
+glShaderType
+--
+NONE = -1
+VERTEX = 0
+FRAGMENT = 1
+GEOMETRY = 2
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>329</x>
+      <y>574</y>
+      <w>70</w>
+      <h>133</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+r1=GlShader
+m2=1..n
+r2=DataTypes
+Has many</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;170.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>476</x>
+      <y>574</y>
+      <w>77</w>
+      <h>133</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+r1=GlShader
+m2=1
+r2=ShaderTypes
+Contains</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;170.0</additional_attributes>
+  </element>
+</diagram>

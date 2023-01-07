@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.0.0">
+  <help_text/>
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>320</x>
+      <y>90</y>
+      <w>410</w>
+      <h>210</h>
+    </coordinates>
+    <panel_attributes>/VertexArray/
+--
+#ID: uint32
+--
+~VertexArray() &lt;&lt;virtual&gt;&gt;
++bind() const: void = 0 &lt;&lt;virtual&gt;&gt;
++unbind() const: void = 0 &lt;&lt;virtual&gt;&gt;
++addVertexBuffer(VertexBuffer*) const: void = 0 &lt;&lt;virtual&gt;&gt;
++setIndexBuffer(IndexBuffer*) const: void = 0 &lt;&lt;virtual&gt;&gt;
++getIndexBuffer() const: const IndexBuffer&amp; = 0 &lt;&lt;virtual&gt;&gt;
++create(): VertexArray* &lt;&lt;static&gt;&gt;
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>320</x>
+      <y>390</y>
+      <w>410</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>GlVertexArray
+--
+vertex_buffers: List
+index_buffer: const IndexBuffer*
+--
++GlVertexArray()
+~GlVertexArray()
++bind() const: void = 0 &lt;&lt;override&gt;&gt;
++unbind() const: void = 0 &lt;&lt;override&gt;&gt;
++addVertexBuffer(VertexBuffer*) const: void = 0 &lt;&lt;override&gt;&gt;
++setIndexBuffer(IndexBuffer*) const: void = 0 &lt;&lt;override&gt;&gt;
++getIndexBuffer() const: const IndexBuffer&amp; = 0 &lt;&lt;override&gt;&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>520</x>
+      <y>290</y>
+      <w>30</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;100.0;10.0;10.0</additional_attributes>
+  </element>
+</diagram>

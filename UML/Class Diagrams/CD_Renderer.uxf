@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.0.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>470</x>
+      <y>120</y>
+      <w>340</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>/RenderAPI/
+--
+-api_state: API &lt;&lt;static&gt;&gt;
+--
++setClearColor(const vec4): void = 0 &lt;&lt;virtual&gt;&gt;
++clear(): void = 0 	&lt;&lt;virtual&gt;&gt;
++draw(VertexArray*): void = 0 &lt;&lt;virtual&gt;&gt;
++getState(): API &lt;&lt;static&gt;&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>150</x>
+      <y>120</y>
+      <w>210</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enum class&gt;&gt;
+API
+--
+NONE = -1
+GL = 1
+DX = 2
+VULKAN = 3
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>350</x>
+      <y>170</y>
+      <w>140</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=0..n</panel_attributes>
+    <additional_attributes>120.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>470</x>
+      <y>320</y>
+      <w>340</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>GlRenderAPI
+--
++setClearColor(const vec4): void &lt;&lt;override&gt;&gt;
++clear(): void &lt;&lt;override&gt;&gt;
++draw(VertexArray*) &lt;&lt;override&gt;&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>630</x>
+      <y>230</y>
+      <w>30</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;90.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>470</x>
+      <y>540</y>
+      <w>340</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>RenderCommand
+--
+R_API: RenderAPI &lt;&lt;static&gt;&gt;
+--
++setClearColor(const vec4): void
++clear(): void
++draw(VertexArray*)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>630</x>
+      <y>400</y>
+      <w>140</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+r1=GlRenderAPI
+m2=1
+r2=RenderCommand
+</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;140.0</additional_attributes>
+  </element>
+</diagram>

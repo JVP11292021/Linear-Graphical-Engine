@@ -1,0 +1,27 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+#visual studio files
+*.vcxproj
+*.filters
+*.user
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# files
+Resources/*
+bin/*
+bin-int/*
+.vs/*
+
+# Local Build files
+/.vs
+/.vscode
+/CMakeSettings.json
+.DS_Store
+*.swp

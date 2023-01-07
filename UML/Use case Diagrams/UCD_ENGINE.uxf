@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.0.0">
+  <help_text/>
+  <zoom_level>7</zoom_level>
+  <element>
+    <id>UMLObject</id>
+    <coordinates>
+      <x>357</x>
+      <y>28</y>
+      <w>434</w>
+      <h>693</h>
+    </coordinates>
+    <panel_attributes>Engine
+valign=top</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLActor</id>
+    <coordinates>
+      <x>854</x>
+      <y>140</y>
+      <w>42</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>System</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLActor</id>
+    <coordinates>
+      <x>238</x>
+      <y>140</y>
+      <w>42</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>User</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLUseCase</id>
+    <coordinates>
+      <x>658</x>
+      <y>147</y>
+      <w>84</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>Manage engine
+systems</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>735</x>
+      <y>154</y>
+      <w>140</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes>10.0;20.0;180.0;20.0</additional_attributes>
+  </element>
+</diagram>
