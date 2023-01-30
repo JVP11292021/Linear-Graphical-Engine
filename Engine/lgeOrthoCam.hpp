@@ -32,6 +32,7 @@ private:
 	float rotation;
 
 public:
+	OrthoCam();
 	OrthoCam(f32, f32, f32, f32);
 
 	LGE_CUDA_FUNC_DECL LGE_INLINE const lmm::mat4& getViewProjection() { return this->viewProjection; }
@@ -41,8 +42,8 @@ public:
 	LGE_CUDA_FUNC_DECL LGE_INLINE lmm::vec3 getPos() const { return this->pos; }
 	LGE_CUDA_FUNC_DECL LGE_INLINE f32 getRotation() const { return this->rotation; }
 
-	LGE_CUDA_FUNC_DECL LGE_INLINE void setPos(const lmm::vec3& pos) { this->pos = pos; }
-	LGE_CUDA_FUNC_DECL LGE_INLINE void setRotation(f32 rotation) { this->rotation = rotation; }
+	LGE_CUDA_FUNC_DECL LGE_INLINE void setPos(const lmm::vec3& pos) { this->pos = pos; this->updateCameraMatrices(); }
+	LGE_CUDA_FUNC_DECL LGE_INLINE void setRotation(f32 rotation) { this->rotation = rotation; this->updateCameraMatrices(); }
 
 };
 

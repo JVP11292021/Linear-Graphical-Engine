@@ -81,6 +81,12 @@ public:
 		return *this;
 	}
 
+	LMM_FUNC_DECL LMM_INLINE Vec<T, 3>& operator [] (uint32 index) {
+		if (index < this->rows)
+			return this->__elem[index];
+		LMM_EXCEPTION("LMM::Exception Given index was too large");
+	}
+
 	LMM_FUNC_DECL LMM_INLINE Vec<T, 3> operator [] (uint32 index) const {
 		if (index < this->rows)
 			return this->__elem[index];

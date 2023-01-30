@@ -16,6 +16,7 @@
 
 #include "engine_setup.h"
 #include "lgeEvents.h" 
+#include "lgeTimestep.hpp"
 
 #include <string>
 
@@ -31,7 +32,7 @@ public:
 
 	LGE_CUDA_FUNC_DECL virtual void onAttach() {}
 	LGE_CUDA_FUNC_DECL virtual void onDetach() {}
-	LGE_CUDA_FUNC_DECL virtual void onUpdate() {}
+	LGE_CUDA_FUNC_DECL virtual void onUpdate(Timestep ts) {}
 	LGE_CUDA_FUNC_DECL virtual void onEvent(hid::Event& e) {}
 	LGE_CUDA_FUNC_DECL virtual void onImGuiRender() {};
 

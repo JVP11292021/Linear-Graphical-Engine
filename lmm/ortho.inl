@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ortho.hpp"
-#include "RenderState.hpp"
 #include "manipulations.hpp"
 
 template <typename T>
@@ -28,15 +27,15 @@ Mat<T, 4, 4> ortho(T left, T right, T bottom, T top, T zNear, T zFar) noexcept {
 	else if (RenderState::api == _API::VK)
 		return Mat<T, 4, 4>();
 #elif defined(LMM_LH)
-	if (RenderState::api == _API::GL)
+	//if (RenderState::isEqual(LMM_STATE_GL))
 		return orthoLH_GL(left, right, bottom, top, zNear, zFar);
-	else if (RenderState::api == _API::DX)
-		return orthoLH_DX(left, right, bottom, top, zNear, zFar);
-	else if (RenderState::api == _API::VK)
-		return Mat<T, 4, 4>();
+	//else if (RenderState::api == _API::DX)
+	//	return orthoLH_DX(left, right, bottom, top, zNear, zFar);
+	//else if (RenderState::api == _API::VK)
+	//	return Mat<T, 4, 4>();
 #endif
 	
-	return Mat<T, 4, 4>();
+	//return Mat<T, 4, 4>();
 }
 
 template <typename T>

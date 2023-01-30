@@ -17,32 +17,26 @@
 #include <glad/glad.h>
 
 #include "engine_setup.h"
-
+#include "lgeTimestep.hpp"
 #include "lgeWindow.hpp"
 #include "lgeLayer.hpp"
 #include "lgeLayerStack.hpp"
 #include "lgeImGuiLayer.hpp"
 #include "lgeHID.h"
 
-#include "lgeGFX.h"
-
 _LGE_BEGIN_NP_LGE
 
 class LGE_API Application {
 private:
 	LGE_CUDA_FUNC_DECL int8 onWindowClose(hid::WindowCloseEvent e);
-	
+private:
 	IWindow* win;
 	ImGuiLayer* imguiLayer; 
 	int8 running = LGE_TRUE;
 	LayerStack layerStack;
+	f32 lastFrameTime = 0.0F;
 
 	LGE_STATIC Application* instance;
-
-	gfx::VertexArray* VAO;
-	gfx::VertexBuffer* VBO;
-	gfx::IndexBuffer* IBO;
-	gfx::Shader* shader;
 
 public:
 	Application();

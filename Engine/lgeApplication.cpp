@@ -12,8 +12,7 @@
 */
 
 #include "lgeApplication.hpp"
-#include "lgeInput.hpp"
-#include "lgeGFX.h"
+#include <GLFW/glfw3.h>
 
 #include <iostream>
 
@@ -28,30 +27,6 @@ Application::Application() {
 
 	this->imguiLayer = new ImGuiLayer();
 	this->push_overlay(this->imguiLayer);
-	
-	f32 vertices[3 * 3] = {
-		-0.5F, -0.5F, 0.0F, //0.8F, 0.2F, 0.8F, 1.0F,
-		 0.5F, -0.5F, 0.0F, //0.2F, 0.3F, 0.8F, 1.0f,
-		 0.0F,  0.5F, 0.0F, //0.8F, 0.8F, 0.2F, 1.0F,
-	};
-
-	uint32 indeces[3] = { 0, 1, 2 };
-
-	VAO = gfx::vao::create();
-	VBO = gfx::vbo::create(vertices, sizeof(vertices));
-
-	gfx::vbl layout = {
-		{gfx::glShaderDataTypes::vec3, std::string("a_Position")},
-		//{gfx::glShaderDataTypes::vec4, std::string("a_Color")},
-	};
-
-	VBO->setLayout(layout);
-	VAO->addVertexBuffer(VBO);
-
-	IBO = gfx::ibo::create(indeces, 3);
-	VAO->setIndexBuffer(IBO);
-
-	shader = gfx::Shader::create(std::string("C:/Users/Jessy/OneDrive/Programming Projects/C-C++/Uncompleted Projects/Linear Game Engine/LinearEngine/Engine/basic.glsl"));
 
 }
 
@@ -86,16 +61,12 @@ LGE_CUDA_FUNC_DECL void Application::push_overlay(ILayer* layer) {
 
 LGE_CUDA_FUNC_DECL void Application::run() {
 	while (this->running) {
-		gfx::RenderCommand::clear();
-		gfx::RenderCommand::setClearColor({ 1.0F, 1.0F, 1.0F, 1.0F });
-		//std::cout << "Input Windows: " << hid::Input::getMousePos()[0] << " " << hid::Input::getMousePos()[1] << std::endl;
-
-		shader->bind();
-		
-		gfx::RenderCommand::draw(this->VAO);
+		f32 time = (f32)glfwGetTime(); // TODO Platform::getTime;
+		Timestep timestep = delta(time, this->lastFrameTime);
+		this->lastFrameTime = time;
 
 		for (uint32 i = 0; i < this->layerStack.getLen(); i++)
-			this->layerStack[i]->onUpdate();
+			this->layerStack[i]->onUpdate(timestep);
 
 		this->imguiLayer->begin();
 		for (uint32 i = 0; i < this->layerStack.getLen(); i++)

@@ -2,19 +2,26 @@
 
 #include "RenderState.hpp"
 
-_API RenderState::api = _API::GL;
+uint32 RenderState::api = LMM_STATE_GL;
 
-LMM_FUNC_DECL void RenderState::changeState(int32 state) {
+
+LMM_FUNC_DECL bool RenderState::isEqual(uint32 state) {
+	if (RenderState::api == state)
+		return true;
+	return false;
+}
+
+LMM_FUNC_DECL void RenderState::changeState(uint32 state) {
 	switch (state) {
-		case 1: 
-			RenderState::api = _API::GL; 
+		case LMM_STATE_GL: 
+			RenderState::api = LMM_STATE_GL;
 			break;
-		case 2: 
-			RenderState::api = _API::DX;
+		case LMM_STATE_DX: 
+			RenderState::api = LMM_STATE_DX;
 			break;
-		case 3: 
-			RenderState::api = _API::VK; 
+		case LMM_STATE_VK: 
+			RenderState::api = LMM_STATE_VK;
 			break;
-		default: RenderState::api = _API::NONE;
+		default: RenderState::api = LMM_STATE_NA;
 	}
 }

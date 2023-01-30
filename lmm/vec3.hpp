@@ -101,9 +101,9 @@ public:
 	LMM_FUNC_DECL LMM_INLINE T getZ() const { return this->z; }
 	LMM_FUNC_DECL LMM_INLINE vec_size getSize() const { return this->size; }
 
-	LMM_FUNC_DECL LMM_INLINE void setX(T x) const { this->x = x; }
-	LMM_FUNC_DECL LMM_INLINE void setY(T y) const { this->y = y; }
-	LMM_FUNC_DECL LMM_INLINE void setZ(T z) const { this->z = z; }
+	LMM_FUNC_DECL LMM_INLINE void setX(T x) { this->x = x; }
+	LMM_FUNC_DECL LMM_INLINE void setY(T y) { this->y = y; }
+	LMM_FUNC_DECL LMM_INLINE void setZ(T z) { this->z = z; }
 };
 
 template <typename T>

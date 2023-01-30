@@ -11,28 +11,36 @@
 |________________________________________________________________________________________|
 */
 
-#include "lgeOrthoCam.hpp"
+#ifndef __LGE_TIMESTEP__
+#define __LGE_TIMESTEP__
 
-_LGE_BEGIN_NP_LGE_GFX
+#include "engine_setup.h"
 
-LGE_CUDA_FUNC_DECL void OrthoCam::updateCameraMatrices() {
-	lmm::mat4 translated = lmm::translate(lmm::mat4(true), this->pos);
-	lmm::mat4 rotmat = lmm::rotate(lmm::mat4(true), (f32)lmm::radians(this->rotation), lmm::vec3(0.0F, 0.0F, 1.0F));
-	lmm::mat4 transform = lmm::dot(translated, rotmat);
+_LGE_BEGIN_NP_LGE
 
-	this->view = lmm::inverse(transform);
-	this->viewProjection = lmm::dot(this->projection, this->view);
-}
+class LGE_API Timestep {
+private:
+	f32 time;
 
-OrthoCam::OrthoCam() {
-	this->rotation = 0.0F;
-}
+public:
+	Timestep(f32 time = 0.0F);
 
-OrthoCam::OrthoCam(f32 left, f32 right, f32 bottom, f32 top) {
-	this->rotation = 0.0F;
-	this->projection = lmm::ortho(left, right, bottom, top, -1.0F, 1.0F);
-	this->view = lmm::mat4(true);
-	this->viewProjection = lmm::dot(this->projection, this->view);
-}
+	LGE_CUDA_FUNC_DECL f32 operator * (f32);
+	LGE_CUDA_FUNC_DECL f32 operator + (f32);
+	LGE_CUDA_FUNC_DECL f32 operator - (f32);
 
-_LGE_END_NP_LGE_GFX
+	LGE_CUDA_FUNC_DECL operator float() const { return this->time; }
+
+	LGE_CUDA_FUNC_DECL LGE_INLINE f32 getSeconds() const { return this->time; }
+	LGE_CUDA_FUNC_DECL LGE_INLINE f32 getMilliseconds() const { return this->time * 1000.0F; }
+
+};
+
+LGE_API LGE_CUDA_FUNC_DECL f32 delta(const Timestep&, const Timestep&);
+LGE_API LGE_CUDA_FUNC_DECL f32 delta(f32, f32);
+LGE_API LGE_CUDA_FUNC_DECL f32 delta_ms(const Timestep&, const Timestep&);
+LGE_API LGE_CUDA_FUNC_DECL f32 delta_ms(f32, f32);
+
+_LGE_END_NP_LGE
+
+#endif

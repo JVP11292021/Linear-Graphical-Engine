@@ -50,9 +50,7 @@ public:
 	LGE_CUDA_FUNC_DECL virtual void setLayout(const VertexBufferLayout<LGE_VBL_BUFFER>&) = 0;
 	LGE_CUDA_FUNC_DECL virtual const VertexBufferLayout<LGE_VBL_BUFFER>& getLayout() const = 0;
 
-
 	LGE_CUDA_FUNC_DECL LGE_STATIC VertexBuffer* create(const void*, uint32);
-
 }
 vbo;
 

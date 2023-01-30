@@ -52,6 +52,7 @@ namespace lmm {
 #include "lgeClock.hpp"
 #include "lge_fsys.hpp" 
 #include "lgeSingleton.hpp"
+#include "lgeTimestep.hpp"
 
 #include "lgeWindow.hpp"
 #include "lgeWinWindow.hpp"

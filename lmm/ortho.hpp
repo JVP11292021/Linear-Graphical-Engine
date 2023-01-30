@@ -3,6 +3,7 @@
 #include "lmm_defs.h"
 #include "types.h"
 #include "mat.hpp"
+#include "RenderState.hpp"
 
 template <typename T>
 LMM_FUNC_DECL LMM_CONSTEXPR

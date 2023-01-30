@@ -11,8 +11,8 @@
 |________________________________________________________________________________________|
 */
 
-#ifndef __LGE_GFX_IMPLEMENTATION__
-#define __LGE_GFX_IMPLEMENTATION__
+#ifndef __LGE_GFX___
+#define __LGE_GFX___
 
 #include "lgeCamera.hpp"
 

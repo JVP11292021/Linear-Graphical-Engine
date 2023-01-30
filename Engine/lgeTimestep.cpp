@@ -11,28 +11,47 @@
 |________________________________________________________________________________________|
 */
 
-#include "lgeOrthoCam.hpp"
+#include "lgeTimestep.hpp"
 
-_LGE_BEGIN_NP_LGE_GFX
+_LGE_BEGIN_NP_LGE
 
-LGE_CUDA_FUNC_DECL void OrthoCam::updateCameraMatrices() {
-	lmm::mat4 translated = lmm::translate(lmm::mat4(true), this->pos);
-	lmm::mat4 rotmat = lmm::rotate(lmm::mat4(true), (f32)lmm::radians(this->rotation), lmm::vec3(0.0F, 0.0F, 1.0F));
-	lmm::mat4 transform = lmm::dot(translated, rotmat);
-
-	this->view = lmm::inverse(transform);
-	this->viewProjection = lmm::dot(this->projection, this->view);
+Timestep::Timestep(f32 time)
+#ifdef LGE_HAS_INITIALIZER_LIST
+	: time(time)
+#endif
+{
+#ifndef LGE_HAS_INITIALIZER_LIST
+	this->time = time;
+#endif
 }
 
-OrthoCam::OrthoCam() {
-	this->rotation = 0.0F;
+LGE_CUDA_FUNC_DECL f32 Timestep::operator * (f32 t) {
+	return this->time * t;
 }
 
-OrthoCam::OrthoCam(f32 left, f32 right, f32 bottom, f32 top) {
-	this->rotation = 0.0F;
-	this->projection = lmm::ortho(left, right, bottom, top, -1.0F, 1.0F);
-	this->view = lmm::mat4(true);
-	this->viewProjection = lmm::dot(this->projection, this->view);
+LGE_CUDA_FUNC_DECL f32 Timestep::operator + (f32 t) {
+	return this->time + t;
 }
 
-_LGE_END_NP_LGE_GFX
+LGE_CUDA_FUNC_DECL f32 Timestep::operator - (f32 t) {
+	return this->time - t;
+}
+
+
+LGE_CUDA_FUNC_DECL f32 delta(const Timestep& t1, const Timestep& t2) {
+	return t1.getSeconds() - t2.getSeconds();
+}
+
+LGE_CUDA_FUNC_DECL f32 delta(f32 t1, f32 t2) {
+	return t1 - t2;
+}
+
+LGE_CUDA_FUNC_DECL f32 delta_ms(const Timestep& t1, const Timestep& t2) {
+	return t1.getMilliseconds() - t2.getMilliseconds();
+}
+
+LGE_CUDA_FUNC_DECL f32 delta_ms(f32 t1, f32 t2) {
+	return t1 - t2;
+}
+
+_LGE_END_NP_LGE
