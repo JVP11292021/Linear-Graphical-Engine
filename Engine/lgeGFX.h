@@ -18,6 +18,7 @@
 
 #include "GL_API.h"
 
+#include "lgeMaterial.hpp"
 #include "lgeShader.hpp"
 #include "lgeBuffers.hpp"
 #include "lgeVertexArray.hpp"

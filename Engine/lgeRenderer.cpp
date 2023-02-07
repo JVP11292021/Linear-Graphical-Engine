@@ -15,17 +15,17 @@
 
 _LGE_BEGIN_NP_LGE_GFX
 
-Renderer::_sceneData* Renderer::data = new Renderer::_sceneData;
+//Renderer::_sceneData* Renderer::data = new Renderer::_sceneData;
 
 LGE_CUDA_FUNC_DECL void Renderer::beginScene(OrthoCam& cam) {
-	Renderer::data->viewProjection = cam.getViewProjection();
+	//Renderer::data->viewProjection = cam.getViewProjection();
 }
 
 LGE_CUDA_FUNC_DECL void Renderer::endScene() {
 
 }
 
-LGE_CUDA_FUNC_DECL void Renderer::submit(const Shader* shader, VertexArray* VAO, const lmm::mat4& transform) {
+LGE_CUDA_FUNC_DECL void Renderer::submit(const Shader* shader, VertexArray* VAO) {
 	shader->bind();
 	VAO->bind();
 	RenderCommand::draw(VAO);

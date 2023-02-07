@@ -11,33 +11,30 @@
 |________________________________________________________________________________________|
 */
 
-#ifndef __LGE_RENDERER__
-#define __LGE_RENDERER__
-
-#include "engine_setup.h"
-#include "lgeRenderCommand.hpp"
-#include "lgeOrthoCam.hpp"
-#include "lgeShader.hpp"
+#include "lgeMaterial.hpp"
 
 _LGE_BEGIN_NP_LGE_GFX
 
-class LGE_API Renderer {
-private:
-	//struct _sceneData {
-	//	lmm::mat4 viewProjection;
-	//};
+Material::Material(Shader* shader) {
+	this->shader = shader;
+}
 
-	//LGE_STATIC _sceneData* data;
+Material::Material(const Material& material) {
+	this->shader = material.shader;
+}
 
-public:
+LGE_CUDA_FUNC_DECL Material Material::operator = (const Material& material) {
+	this->shader = material.shader;
+	return *this;
+}
 
-	LGE_CUDA_FUNC_DECL LGE_STATIC void beginScene(OrthoCam&);
-	LGE_CUDA_FUNC_DECL LGE_STATIC void endScene();
 
-	LGE_CUDA_FUNC_DECL LGE_STATIC void submit(const Shader*, VertexArray*);
+MaterialInstance::MaterialInstance(Material* material) {
+	this->mat = material;
+}
 
-	LGE_CUDA_FUNC_DECL LGE_INLINE LGE_STATIC RenderAPI::API getAPI() { return RenderAPI::getState(); }
- };
+MaterialInstance::MaterialInstance(const MaterialInstance& instance) {
+	this->mat = instance.mat;
+}
 
 _LGE_END_NP_LGE_GFX
-#endif

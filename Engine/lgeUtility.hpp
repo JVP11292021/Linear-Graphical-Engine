@@ -11,33 +11,12 @@
 |________________________________________________________________________________________|
 */
 
-#ifndef __LGE_RENDERER__
-#define __LGE_RENDERER__
-
 #include "engine_setup.h"
-#include "lgeRenderCommand.hpp"
-#include "lgeOrthoCam.hpp"
-#include "lgeShader.hpp"
 
-_LGE_BEGIN_NP_LGE_GFX
+_LGE_BEGIN_NP_LGE_CORE
 
-class LGE_API Renderer {
-private:
-	//struct _sceneData {
-	//	lmm::mat4 viewProjection;
-	//};
+template <class base, class src>
+LGE_CUDA_FUNC_DECL 
+bool isinstance(const src*) noexcept;
 
-	//LGE_STATIC _sceneData* data;
-
-public:
-
-	LGE_CUDA_FUNC_DECL LGE_STATIC void beginScene(OrthoCam&);
-	LGE_CUDA_FUNC_DECL LGE_STATIC void endScene();
-
-	LGE_CUDA_FUNC_DECL LGE_STATIC void submit(const Shader*, VertexArray*);
-
-	LGE_CUDA_FUNC_DECL LGE_INLINE LGE_STATIC RenderAPI::API getAPI() { return RenderAPI::getState(); }
- };
-
-_LGE_END_NP_LGE_GFX
-#endif
+_LGE_END_NP_LGE_CORE

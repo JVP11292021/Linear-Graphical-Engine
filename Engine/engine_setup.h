@@ -13,6 +13,7 @@
 
 #ifndef __LGE_ENGINE_SETUP__
 #define __LGE_ENGINE_SETUP__
+#	pragma warning(disable : 4067) // To disable some very annoying warnings i couldn't get rid of
 
 #	define __LGE_MAJOR__		0.1
 #	define __LGE_MINOR__		0.0
@@ -397,7 +398,7 @@
 
 #	define lgeBIT(x) 						(1 << (x))
 #	define lgeBindEvent(x) 					(std::bind(&x, this, std::placeholders::_1))
-#	define lgeARRAY_LEN(array)				(__lge_len(array))
+#	define lgeARRAY_LEN(x)					(__lge_len(x))
 
 // Internal LGE macro Variables.
 
@@ -408,9 +409,9 @@
 #	define lgeTB							(lgeGB * lgeGB)
 #	define lgePB							(lgeTB * lgeTB)
 
-#	define lgeBIT_AND 						&
-#	define lgeBIT_OR  						|
-#	define lgeBIT_XOR						^
+#	define AND		 						&
+#	define OR		  						|
+#	define XOR								^
 
 // Screen resolution
 #	if LGE_PLATFORM == LGE_PLATFORM_WINDOWS
@@ -1197,6 +1198,8 @@ _LGE_END_C_DECLS
 		
 #	ifdef LGE_HAS_CONSTEXPR		
 #		define LGE_CONSTEXPR 					constexpr;
+#	else
+#		define LGE_CONSTEXPR
 #	endif
 
 #	ifdef LGE_HAS_STATIC_ASSERT
@@ -1204,6 +1207,8 @@ _LGE_END_C_DECLS
 #		ifdef LGE_PREDEF_STANDARD_CPP_2017
 #			define LGE_STATIC_ASSERT 			static_assert
 #		endif
+#	else
+#		define LGE_STATIC_ASSERT_M	
 #	endif
 
 #	ifdef LGE_HAS_TYPE_TRAITS
@@ -1212,21 +1217,27 @@ _LGE_END_C_DECLS
 
 #	ifdef LGE_HAS_AUTO
 #		define LGE_AUTO 						auto
+#	else
+#		define LGE_AUTO
 #	endif
 
 #	ifdef LGE_HAS_EXTERNAL_TEMPLATE
 #		define LGE_EX_TEMP 						extern template
+#	else
+#		define LGE_EX_TEMP 
 #	endif
 
 #	ifdef LGE_HAS_TEMPLATE_ALIASSES
 #		define LGE_TEMP_ALLIAS 					using
+#	else
+#		define LGE_TEMP_ALLIAS
 #	endif
 
 //#	ifdef LGE_HAS_ATOMIC_OPERATIONS
 //#		include <atomic>
 //#	endif
 
- #	ifdef LGE_HAS_ALIGNAS || LGE_HAS_ALIGNOF
+#	ifdef LGE_HAS_ALIGNAS || LGE_HAS_ALIGNOF
 #		define LGE_ALIGNOF 						alignof
 #		define LGE_ALIGNAS 						alignas
 #	endif

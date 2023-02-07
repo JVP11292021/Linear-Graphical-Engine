@@ -9,11 +9,12 @@ private:
 	std::shared_ptr<lge::gfx::VertexBuffer> VBO;
 
 	lge::gfx::OrthoCam camera;
-
+	
 public:
 	ExampleLayer()
 		: ILayer("Example")
 	{
+
 		this->camera = lge::gfx::OrthoCam(-1.6F, 1.6F, -0.9F, 0.9F);
 
 		f32 vertices[3 * 3] = {
@@ -29,7 +30,7 @@ public:
 
 		lge::gfx::vbl layout = {
 			{lge::gfx::glShaderDataTypes::vec3, std::string("a_Position")},
-			//{gfx::glShaderDataTypes::vec4, std::string("a_Color")},
+			//{lge::gfx::glShaderDataTypes::vec4, std::string("a_Color")},
 		};
 
 		VBO->setLayout(layout);
@@ -39,11 +40,13 @@ public:
 		VAO->setIndexBuffer(IBO.get());
 
 		shader.reset(lge::gfx::Shader::create(std::string("../shaders/basic.glsl")));
+
+		lge::gfx::MaterialRef material = new lge::gfx::Material(this->shader.get());
+		lge::gfx::MaterialInstanceRef mi = lge::gfx::MaterialInstanceRef(material);
+		
 	}
 
 	void onUpdate(lge::Timestep ts) override {
-		std::cout << "Delta time: " << ts.getSeconds() << "s" << "\n";
-
 		lge::gfx::RenderCommand::clear();
 		lge::gfx::RenderCommand::setClearColor({ 1.0F, 1.0F, 1.0F, 1.0F });
 		
