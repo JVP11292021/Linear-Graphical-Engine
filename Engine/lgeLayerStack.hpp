@@ -37,7 +37,7 @@ public:
 	//LGE_CUDA_FUNC_DECL core::List<ILayer*> begin() { return this->layers.begin(); }
 	//LGE_CUDA_FUNC_DECL core::List<ILayer*> end() { return this->layers.end(); }
 
-	LGE_CUDA_FUNC_DECL LGE_INLINE uint32 getLen() const { return this->layers.len; }
+	LGE_CUDA_FUNC_DECL LGE_INLINE uint32 getLen() const { return this->layers.length(); }
 
 	LGE_CUDA_FUNC_DECL ILayer* operator [] (uint32);
 

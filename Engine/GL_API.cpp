@@ -38,6 +38,11 @@ LGE_CUDA_FUNC_DECL void GlRenderAPI::draw(VertexArray* VAO) {
 // GlTexture class
 // =====================================================================
 
+LGE_CUDA_FUNC_DECL void GlTexture::destroy() {
+	__glDebug(glDeleteTextures(1, &this->ID));
+	this->ID = 0;
+}
+
 GlTexture::GlTexture(const std::string& path) 
 #ifdef	LGE_HAS_INITIALIZER_LIST
 	: localBuffer(nullptr), width(0), height(0), bbp(0)
@@ -72,7 +77,42 @@ GlTexture::GlTexture(const std::string& path)
 }
 
 GlTexture::~GlTexture() {
-	__glDebug(glDeleteTextures(1, &this->ID));
+	this->destroy();
+}
+
+GlTexture::GlTexture(GlTexture&& tex) noexcept
+#ifdef	LGE_HAS_INITIALIZER_LIST
+	: localBuffer(tex.localBuffer), width(tex.width), height(tex.height), bbp(tex.bbp)
+#endif
+{
+#ifndef LGE_HAS_INITIALIZER_LIST
+	this->localBuffer = tex.localBuffer;
+	this->width = tex.width;
+	this->height = tex.height;
+	this->bbp = tex.bbp;
+#endif
+
+	this->ID = tex.ID;
+	this->path = tex.path;
+
+	tex.ID = NULL;
+}
+
+LGE_CUDA_FUNC_DECL GlTexture& GlTexture::operator = (GlTexture&& tex) noexcept {
+	if (this != &tex) {
+		this->destroy();
+		
+		this->localBuffer = tex.localBuffer;
+		this->width = tex.width;
+		this->height = tex.height;
+		this->bbp = tex.bbp;
+		this->ID = tex.ID;
+		this->path = tex.path;
+
+		tex.ID = NULL;
+	}
+
+	return *this;
 }
 
 LGE_CUDA_FUNC_DECL void GlTexture::bind(uint32 slot) const {
@@ -88,6 +128,11 @@ LGE_CUDA_FUNC_DECL void GlTexture::unbind() const {
 // GlVertexBuffer class
 // =====================================================================
 
+LGE_CUDA_FUNC_DECL void GlVertexBuffer::destroy() {
+	__glDebug(glDeleteBuffers(1, &this->ID));
+	this->ID = 0;
+}
+
 GlVertexBuffer::GlVertexBuffer(const void* data, uint32 size, int32 dMethod) {
 	__glDebug(glGenBuffers(1, &this->ID));
 	__glDebug(glBindBuffer(GL_ARRAY_BUFFER, this->ID));
@@ -95,7 +140,23 @@ GlVertexBuffer::GlVertexBuffer(const void* data, uint32 size, int32 dMethod) {
 }
 
 GlVertexBuffer::~GlVertexBuffer() {
-	__glDebug(glDeleteBuffers(1, &this->ID));
+	this->destroy();
+}
+
+GlVertexBuffer::GlVertexBuffer(GlVertexBuffer&& buffer) noexcept {
+	this->ID = buffer.ID;
+	this->layout = buffer.layout;
+}
+
+LGE_CUDA_FUNC_DECL GlVertexBuffer& GlVertexBuffer::operator = (GlVertexBuffer&& buffer) noexcept {
+	if (this != &buffer) {
+		this->destroy();
+
+		this->ID = buffer.ID;
+		this->layout = buffer.layout;
+	}
+
+	return *this;
 }
 
 LGE_CUDA_FUNC_DECL void GlVertexBuffer::bind() const {
@@ -118,6 +179,11 @@ LGE_CUDA_FUNC_DECL const VertexBufferLayout<LGE_VBL_BUFFER>& GlVertexBuffer::get
 // GlIndexBuffer class
 // =====================================================================
 
+LGE_CUDA_FUNC_DECL void GlIndexBuffer::destroy() {
+	__glDebug(glDeleteBuffers(1, &this->ID));
+	this->ID = 0;
+}
+
 GlIndexBuffer::GlIndexBuffer(const void* data, uint32 count, int32 dMethod) {
 	this->count = count;
 	__glDebug(glGenBuffers(1, &this->ID));
@@ -126,7 +192,27 @@ GlIndexBuffer::GlIndexBuffer(const void* data, uint32 count, int32 dMethod) {
 }
 
 GlIndexBuffer::~GlIndexBuffer() {
-	__glDebug(glDeleteBuffers(1, &this->ID));
+	this->destroy();
+}
+
+GlIndexBuffer::GlIndexBuffer(GlIndexBuffer&& buffer) noexcept {
+	this->ID = buffer.ID;
+	this->count = buffer.count;
+
+	buffer.ID = NULL;
+}
+
+LGE_CUDA_FUNC_DECL GlIndexBuffer& GlIndexBuffer::operator = (GlIndexBuffer&& buffer) noexcept {
+	if (this != &buffer) {
+		this->destroy();
+
+		this->ID = buffer.ID;
+		this->count = buffer.count;
+
+		buffer.ID = NULL;
+	}
+
+	return *this;
 }
 
 LGE_CUDA_FUNC_DECL void GlIndexBuffer::bind() const {
@@ -141,12 +227,39 @@ LGE_CUDA_FUNC_DECL void GlIndexBuffer::unbind() const {
 // GlVertexArray class
 // =====================================================================
 
+LGE_CUDA_FUNC_DECL void GlVertexArray::destroy() {
+	__glDebug(glDeleteVertexArrays(1, &this->ID));
+	this->ID = 0;
+}
+
 GlVertexArray::GlVertexArray() {
 	__glDebug(glGenVertexArrays(1, &this->ID));
 }
 
 GlVertexArray::~GlVertexArray() {
-	__glDebug(glDeleteVertexArrays(1, &this->ID));
+	this->destroy();
+}
+
+GlVertexArray::GlVertexArray(GlVertexArray&& arr) noexcept {
+	this->ID = arr.ID;
+	this->index_buffer = arr.index_buffer;
+	this->vertex_buffers = arr.vertex_buffers;
+
+	arr.ID = 0;
+}
+
+LGE_CUDA_FUNC_DECL GlVertexArray& GlVertexArray::operator = (GlVertexArray&& arr) noexcept {
+	if (this != &arr) {
+		this->destroy();
+
+		this->ID = arr.ID;
+		this->index_buffer = arr.index_buffer;
+		this->vertex_buffers = arr.vertex_buffers;
+
+		arr.ID = 0;
+	}
+
+	return *this;
 }
 
 LGE_CUDA_FUNC_DECL void GlVertexArray::bind() const {
@@ -169,7 +282,8 @@ LGE_CUDA_FUNC_DECL void GlVertexArray::addVertexBuffer(const VertexBuffer* VBO) 
 			glShaderTypeToOpenGl(layout[i].type),
 			layout[i].normalized ? LGE_TRUE : LGE_FALSE,
 			layout.getStride(),
-			(const void*)layout[i].offset));
+			(const void*)layout[i].offset)
+		);
 	}
 
 	this->vertex_buffers.append(VBO);
@@ -283,6 +397,11 @@ LGE_CUDA_FUNC_DECL int32 GlShader::uniformLocation(istr name) {
 	return location;
 }
 
+LGE_CUDA_FUNC_DECL void GlShader::destroy() {
+	__glDebug(glDeleteProgram(this->ID));
+	this->ID = 0;
+}
+
 GlShader::GlShader(std::string& shaderPath) {
 	core::Tuple<std::string> shaders = this->parse(shaderPath);
 	this->ID = this->create(shaders[0].c_str(), shaders[1].c_str(), (shaders[2].empty() ? nullptr : shaders[2].c_str()));
@@ -301,7 +420,27 @@ GlShader::GlShader(istr vertex, istr fragment, istr geometry) {
 }
 
 GlShader::~GlShader() {
-	__glDebug(glDeleteProgram(this->ID));
+	this->destroy();
+}
+
+GlShader::GlShader(GlShader&& shader) noexcept {
+	this->ID = shader.ID;
+	this->cache = shader.cache;
+
+	shader.ID = NULL;
+}
+
+LGE_CUDA_FUNC_DECL GlShader& GlShader::operator = (GlShader&& shader) noexcept {
+	if (this != &shader) {
+		this->destroy();
+
+		this->ID = shader.ID;
+		this->cache = shader.cache;
+
+		shader.ID = NULL;
+	}
+
+	return *this;
 }
 
 LGE_CUDA_FUNC_DECL void GlShader::bind() const {

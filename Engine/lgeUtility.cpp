@@ -15,10 +15,19 @@
 
 _LGE_BEGIN_NP_LGE_CORE
 
-template <class base, class src>
-LGE_CUDA_FUNC_DECL
-bool isinstance(const src* source) noexcept {
-	return dynamic_cast<const base*>(source) != nullptr;
+LGE_API LGE_CUDA_FUNC_DECL
+uint32 len(const Collection& _X) noexcept {
+	return _X.length();
+}
+
+LGE_API LGE_CUDA_FUNC_DECL
+int32 max_capacity(const Collection& _X) noexcept {
+	return _X.max_capacity();
+}
+
+LGE_API LGE_CUDA_FUNC_DECL
+size_t size(const Collection& _X) noexcept {
+	return _X.getSize();
 }
 
 _LGE_END_NP_LGE_CORE

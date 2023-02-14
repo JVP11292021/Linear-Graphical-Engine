@@ -55,12 +55,17 @@ public:
 
 class LGE_API GlTexture : public Texture {
 private:
+	LGE_CUDA_FUNC_DECL void destroy();
+private:
 	uint8* localBuffer;
 	int32 width, height, bbp;
 
 public:
 	GlTexture(const std::string&);
 	~GlTexture();
+
+	LGE_CLS_NON_COPIABLE(GlTexture)
+	LGE_CLS_CTOR_MOVE(GlTexture)
 
 	LGE_CUDA_FUNC_DECL void bind(uint32 = 0) const override;
 	LGE_CUDA_FUNC_DECL void unbind() const override;
@@ -76,9 +81,14 @@ public:
 // =====================================================================
 
 class LGE_API GlVertexBuffer : public VertexBuffer {
+private:
+	LGE_CUDA_FUNC_DECL void destroy();
 public:
 	GlVertexBuffer(const void*, uint32, int32 = GL_STATIC_DRAW);
 	~GlVertexBuffer();
+
+	LGE_CLS_NON_COPIABLE(GlVertexBuffer)
+	LGE_CLS_CTOR_MOVE(GlVertexBuffer)
 
 	LGE_CUDA_FUNC_DECL void bind() const override;
 	LGE_CUDA_FUNC_DECL void unbind() const override;
@@ -93,9 +103,14 @@ public:
 // =====================================================================
 
 class LGE_API GlIndexBuffer : public IndexBuffer {
+private:
+	LGE_CUDA_FUNC_DECL void destroy();
 public:
 	GlIndexBuffer(const void*, uint32, int32 = GL_STATIC_DRAW);
 	~GlIndexBuffer();
+
+	LGE_CLS_NON_COPIABLE(GlIndexBuffer)
+	LGE_CLS_CTOR_MOVE(GlIndexBuffer)
 
 	LGE_CUDA_FUNC_DECL void bind() const override;
 	LGE_CUDA_FUNC_DECL void unbind() const override;
@@ -108,12 +123,17 @@ public:
 
 class LGE_API GlVertexArray : public VertexArray {
 private:
+	LGE_CUDA_FUNC_DECL void destroy();
+private:
 	core::List<const VertexBuffer*> vertex_buffers;
 	const IndexBuffer* index_buffer;
 
 public:
 	GlVertexArray();
 	~GlVertexArray();
+
+	LGE_CLS_NON_COPIABLE(GlVertexArray)
+	LGE_CLS_CTOR_MOVE(GlVertexArray)
 
 	//LGE_CUDA_FUNC_DECL void addBuffer(const GlVertexBuffer&, const VertexBufferLayout&);
 
@@ -151,18 +171,22 @@ glShaderType;
 
 class LGE_API GlShader : public Shader {
 private:
-	std::unordered_map<std::string, int32> cache;
-
 	LGE_CUDA_FUNC_DECL core::Tuple<std::string> parse(std::string&);
 	LGE_CUDA_FUNC_DECL uint32 compile(uint32, istr);
 	LGE_CUDA_FUNC_DECL uint32 create(istr, istr, istr = nullptr);
 	LGE_CUDA_FUNC_DECL int32 uniformLocation(istr);
+	LGE_CUDA_FUNC_DECL void destroy();
+private:
+	std::unordered_map<std::string, int32> cache;
 
 public:
 
 	GlShader(std::string&);
 	GlShader(istr, istr, istr = nullptr);
 	~GlShader();
+
+	LGE_CLS_NON_COPIABLE(GlShader)
+	LGE_CLS_CTOR_MOVE(GlShader)
 
 	LGE_CUDA_FUNC_DECL void bind() const override;
 	LGE_CUDA_FUNC_DECL void unbind() const override;
@@ -192,7 +216,6 @@ LGE_CUDA_FUNC_DECL LGE_API int32 glShaderTypeSize(glShaderDataTypes);
 LGE_CUDA_FUNC_DECL LGE_API int32 glComponentCount(glShaderDataTypes);
 LGE_CUDA_FUNC_DECL LGE_API GLenum glShaderTypeToOpenGl(glShaderDataTypes);
 LGE_CUDA_FUNC_DECL LGE_API istr glGetErrorString(GLenum);
-
 _LGE_END_NP_LGE_GFX
 
 #endif

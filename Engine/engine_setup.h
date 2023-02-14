@@ -13,6 +13,7 @@
 
 #ifndef __LGE_ENGINE_SETUP__
 #define __LGE_ENGINE_SETUP__
+
 #	pragma warning(disable : 4067) // To disable some very annoying warnings i couldn't get rid of
 
 #	define __LGE_MAJOR__		0.1
@@ -396,7 +397,9 @@
 #		define lgeCORE_ASSERT(x, ...) 
 #	endif
 
+#	define lgeIMPLIES(x, y)					(!(x) || (y))
 #	define lgeBIT(x) 						(1 << (x))
+#	define lgeLSB(x)						((x) ^ ((x) - 1) & (x))
 #	define lgeBindEvent(x) 					(std::bind(&x, this, std::placeholders::_1))
 #	define lgeARRAY_LEN(x)					(__lge_len(x))
 
@@ -468,11 +471,19 @@ Makes a class non copiable.
 /*
 Makes a class movable.
 Automates the boilerplate code for 
-declaring default move constructor and 
+declaring default move constructor 
 and move operator. 
 */
 #	define LGE_CLS_CTOR_MOVE_DEFAULT(name) name(name&&) = default;\
-										   LGE_CUDA_FUNC_DECL name& operator = (name&&) = default;                 
+										   LGE_CUDA_FUNC_DECL name& operator = (name&&) = default;       
+
+/*
+Makes a class movable.
+Automates the boilerplate code for
+declaring move constructor and move operator.
+*/
+#	define LGE_CLS_CTOR_MOVE(name) name(name&&) noexcept;\
+										   LGE_CUDA_FUNC_DECL name& operator = (name&&) noexcept; 
 
 /*
 Makes a class only movable, but non-copiable.
@@ -495,6 +506,18 @@ Defines io operators for a class
 // =====================================================================
 // LGE custom data types
 // =====================================================================
+
+#	ifdef __cplusplus
+_LGE_BEGIN_NP_LGE
+
+template <typename T>
+using scope = std::unique_ptr<T>;
+
+template <typename T>
+using ref = std::shared_ptr<T>;
+
+_LGE_END_NP_LGE
+#	endif
 
 #	ifdef __cplusplus
 _LGE_BEGIN_NP_LGE

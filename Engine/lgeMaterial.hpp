@@ -11,6 +11,8 @@
 |________________________________________________________________________________________|
 */
 
+#ifndef __LGE_MATERIAL__
+#define __LGE_MATERIAL__
 
 #include "engine_setup.h"
 #include "lgeShader.hpp"
@@ -64,7 +66,9 @@ public:
 
 };
 
-typedef Material* MaterialRef;
-typedef MaterialInstance* MaterialInstanceRef;
+LGE_API typedef Material* MaterialRef;
+LGE_API typedef MaterialInstance* MaterialInstanceRef;
 
 _LGE_END_NP_LGE_GFX
+
+#endif

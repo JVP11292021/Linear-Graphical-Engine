@@ -3,10 +3,10 @@
 
 class ExampleLayer : public lge::ILayer {
 private:
-	std::shared_ptr<lge::gfx::Shader> shader;
-	std::shared_ptr<lge::gfx::VertexArray> VAO;
-	std::shared_ptr<lge::gfx::IndexBuffer> IBO;
-	std::shared_ptr<lge::gfx::VertexBuffer> VBO;
+	lge::ref<lge::gfx::Shader> shader;
+	lge::ref<lge::gfx::VertexArray> VAO;
+	lge::ref<lge::gfx::IndexBuffer> IBO;
+	lge::ref<lge::gfx::VertexBuffer> VBO;
 
 	lge::gfx::OrthoCam camera;
 	
@@ -14,7 +14,7 @@ public:
 	ExampleLayer()
 		: ILayer("Example")
 	{
-
+		//std::cout <<wglGetCurrentDC();
 		this->camera = lge::gfx::OrthoCam(-1.6F, 1.6F, -0.9F, 0.9F);
 
 		f32 vertices[3 * 3] = {
@@ -36,26 +36,26 @@ public:
 		VBO->setLayout(layout);
 		VAO->addVertexBuffer(VBO.get());
 
-		IBO.reset(lge::gfx::ibo::create(indeces, 3));
+		IBO.reset(lge::gfx::ibo::create(indeces, sizeof(indeces) / sizeof(uint32)));
 		VAO->setIndexBuffer(IBO.get());
 
 		shader.reset(lge::gfx::Shader::create(std::string("../shaders/basic.glsl")));
 
-		lge::gfx::MaterialRef material = new lge::gfx::Material(this->shader.get());
-		lge::gfx::MaterialInstanceRef mi = lge::gfx::MaterialInstanceRef(material);
+		//lge::gfx::MaterialRef material = new lge::gfx::Material(this->shader.get());
+		//lge::gfx::MaterialInstanceRef mi = lge::gfx::MaterialInstanceRef(material);
 		
 	}
 
 	void onUpdate(lge::Timestep ts) override {
 		lge::gfx::RenderCommand::clear();
-		lge::gfx::RenderCommand::setClearColor({ 1.0F, 1.0F, 1.0F, 1.0F });
+		lge::gfx::RenderCommand::setClearColor({ 0.6F, 0.8F, 0.44F, 0.5F });
 		
-		this->camera.setPos({ 0.5F, 0.5F, 0.0F });
-		this->camera.setRotation(45.0F);
+		//this->camera.setPos({ 0.5F, 0.5F, 0.0F });
+		//this->camera.setRotation(45.0F);
 
 		lge::gfx::Renderer::beginScene(this->camera);
 
-		//lge::gfx::Renderer::submit(this->shader.get(), this->VAO.get());
+		lge::gfx::Renderer::submit(this->shader.get(), this->VAO.get());
 
 		lge::gfx::Renderer::endScene();
 	}

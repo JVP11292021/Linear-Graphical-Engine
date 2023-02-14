@@ -30,7 +30,10 @@ _LGE_BEGIN_NP_LGE_CORE
 template <typename TF, typename TL>
 Couple<TF, TL>::Couple(TF first, TL last) 
 #ifdef LGE_HAS_INITIALIZER_LIST
-	: first(first), last(last)
+	: Collection(
+		sizeof(TF) + sizeof(TL),
+		2, 2), 
+	first(first), last(last)
 #endif
 {
 #ifndef LGE_HAS_INITIALIZER_LIST
@@ -42,7 +45,10 @@ Couple<TF, TL>::Couple(TF first, TL last)
 template <typename TF, typename TL>
 Couple<TF, TL>::Couple(const Couple& couple)
 #ifdef LGE_HAS_INITIALIZER_LIST
-	: first(couple.first), last(couple.last)
+	: Collection(
+		sizeof(TF) + sizeof(TL), 
+		2, 2), 
+	first(couple.first), last(couple.last)
 #endif
 {
 #ifndef LGE_HAS_INITIALIZER_LIST
@@ -58,19 +64,21 @@ Couple<TF, TL>::Couple(const Couple& couple)
 template <typename T>
 Tuple<T>::Tuple()
 #ifdef LGE_HAS_INITIALIZER_LIST
-	: size(0), len(0)
+	: Collection(
+		0, 0,
+		lgeARRAY_LEN(this->data))
 #endif
 {
-#ifndef LGE_HAS_INITIALIZER_LIST
-	this->size = 0;
-	this->len = 0;
-#endif
 }
 
 template <typename T>
-Tuple<T>::Tuple(int32 f, ...) {
-	this->size = 0;
-	this->len = 0;
+Tuple<T>::Tuple(int32 f, ...) 
+#ifdef LGE_HAS_INITIALIZER_LIST
+	: Collection(
+		0, 0, 
+		lgeARRAY_LEN(this->data))
+#endif
+{
 
 	va_list arguments;
 	va_start(arguments, f);
@@ -90,13 +98,11 @@ Tuple<T>::Tuple(int32 f, ...) {
 template <typename T>
 Tuple<T>::Tuple(const std::initializer_list<T>& ilist)
 #ifdef LGE_HAS_INITIALIZER_LIST
-	: size(0), len(0)
+	: Collection(
+		0, 0,
+		lgeARRAY_LEN(this->data))
 #endif
 {
-#ifndef LGE_HAS_INITIALIZER_LIST
-	this->size = 0;
-	this->len = 0;
-#endif
 	for (const T item : ilist) {
 		this->data[this->len] = item;
 		this->len++;
@@ -107,16 +113,15 @@ Tuple<T>::Tuple(const std::initializer_list<T>& ilist)
 template <typename T>
 Tuple<T>::Tuple(const Tuple<T>& t)
 #ifdef LGE_HAS_INITIALIZER_LIST
-	: size(t.size), len(t.len)
+	: Collection(
+		t.size, 
+		t.len, 
+		t.capacity)
 #endif
 {
-#ifndef LGE_HAS_INITIALIZER_LIST
-	this->size = t.size;
-	this->len = t.len;
-#endif
+
 	for (int i = 0; i < t.len; i++)
 		this->data[i] = t.data[i];
-
 }
 
 template <typename T>
@@ -138,7 +143,11 @@ static const uint32 undefinedVal = -93232002;
 template <typename T, uint32 E>
 Array<T, E>::Array()
 #ifdef LGE_HAS_INITIALIZER_LIST
-	: size(sizeof(arr)), a_begin(0), a_end(curr_pos)
+	: Collection(
+		sizeof(this->arr),
+		0,
+		lgeARRAY_LEN(this->arr)), 
+	a_begin(0), a_end(curr_pos)
 #endif
 {
 #ifndef LGE_HAS_INITIALIZER_LIST
@@ -152,7 +161,11 @@ Array<T, E>::Array()
 template <typename T, uint32 E>
 Array<T, E>::Array(Array& a)
 #ifdef LGE_HAS_INITIALIZER_LIST
-	: size(sizeof(a.arr)), a_begin(0), a_end(a.curr_pos)
+	: Collection(
+		a.size,
+		a.len,
+		a.capacity),
+	a_begin(0), a_end(a.curr_pos)
 #endif
 {
 #ifndef LGE_HAS_INITIALIZER_LIST
@@ -161,17 +174,21 @@ Array<T, E>::Array(Array& a)
 	this->a_end = a.arr[E];
 #endif
 
-	if (a.len > this->len)
+	if (a.len > this->capacity)
 		throw ArrayOutOfBounds(const_cast<char*>("LGE::ArrayOutOfBounds Exception "));
 
-	for (int32 x = 0; x < this->len; x++)
+	for (int32 x = 0; x < this->capacity; x++)
 		this->arr[x] = a.arr[x];
 }
 
 template <typename T, uint32 E>
 Array<T, E>::Array(const Array& a)
 #ifdef LGE_HAS_INITIALIZER_LIST
-	: size(sizeof(a.arr)), a_begin(0), a_end(a.curr_pos)
+	: Collection(
+		a.size,
+		a.len,
+		a.capacity),
+		a_begin(0), a_end(a.curr_pos)
 #endif
 {
 #ifndef LGE_HAS_INITIALIZER_LIST
@@ -180,10 +197,10 @@ Array<T, E>::Array(const Array& a)
 	this->a_end = a.arr[E];
 #endif
 
-	if (a.len > this->len)
+	if (a.len > this->capacity)
 		throw ArrayOutOfBounds(const_cast<char*>("LGE::ArrayOutOfBounds Exception "));
 
-	for (int32 x = 0; x < this->len; x++)
+	for (int32 x = 0; x < this->capacity; x++)
 		this->arr[x] = a.arr[x];
 
 }
@@ -191,7 +208,11 @@ Array<T, E>::Array(const Array& a)
 template <typename T, uint32 E>
 Array<T, E>::Array(const std::initializer_list<T>& ilist)
 #ifdef LGE_HAS_INITIALIZER_LIST
-	: size(sizeof(arr)), a_begin(0), a_end(curr_pos)
+	: Collection(
+		sizeof(this->arr),
+		0,
+		lgeARRAY_LEN(this->arr)),
+	a_begin(0), a_end(curr_pos)
 #endif
 {
 #ifndef LGE_HAS_INITIALIZER_LIST
@@ -204,6 +225,8 @@ Array<T, E>::Array(const std::initializer_list<T>& ilist)
 		this->arr[this->curr_pos] = item;
 		this->curr_pos++;
 	}
+
+	this->len = curr_pos;
 }
 
 
@@ -211,19 +234,20 @@ Array<T, E>::Array(const std::initializer_list<T>& ilist)
 
 template <typename T, uint32 E>
 LGE_CUDA_FUNC_DECL Array<T, E>& Array<T, E>::append(T item) {
-	if (this->curr_pos == this->len)
+	if (this->curr_pos == this->capacity)
 		throw ArrayOutOfBounds(const_cast<char*>("LGE::ArrayOutOfBounds Exception\n Array cannot hold more than [n] elements.\n"));
 	else
-		if (this->curr_pos < this->len) {
+		if (this->curr_pos < this->capacity) {
 			this->arr[this->curr_pos++] = item;
 			this->a_end++;
+			this->len = this->curr_pos;
 		}
 	return *this;
 }
 
 template <typename T, uint32 E>
 LGE_CUDA_FUNC_DECL Array<T, E>& Array<T, E>::insertAt(T i, uint32 index) {
-	if (index < this->len)
+	if (index < this->capacity)
 		this->arr[index] = i;
 	else
 		throw ArrayOutOfBounds(const_cast<char*>("LGE::ArrayOutOfBounds Exception "));
@@ -234,16 +258,17 @@ LGE_CUDA_FUNC_DECL Array<T, E>& Array<T, E>::insertAt(T i, uint32 index) {
 template <typename T, uint32 E>
 LGE_CUDA_FUNC_DECL Array<T, E>& Array<T, E>::del(T item) {
 	uint32 index;
-	for (index = 0; index < this->len; index++)
+	for (index = 0; index < this->capacity; index++)
 		if (arr[index] == item)
 			break;
 
-	if (index < this->len) {
-		this->len = this->len - 1;
-		for (int32 i = (index == 0 ? 0 : index-1); i < this->len; i++)
+	if (index < this->capacity) {
+		this->capacity = this->capacity - 1;
+		for (int32 i = (index == 0 ? 0 : index-1); i < this->capacity; i++)
 			this->arr[i] = this->arr[i + 1];
 		this->curr_pos--;
 		this->a_end = this->curr_pos;
+		this->len = this->curr_pos;
 
 		return *this;
 	}
@@ -253,12 +278,13 @@ LGE_CUDA_FUNC_DECL Array<T, E>& Array<T, E>::del(T item) {
 
 template <typename T, uint32 E>
 LGE_CUDA_FUNC_DECL Array<T, E>& Array<T, E>::removeAt(uint32 index) {
-	if (index < this->len) {
-		this->len = this->len - 1;
-		for (int32 i = (index == 0 ? 0 : index-1); i < this->len; i++)
+	if (index < this->capacity) {
+		this->capacity = this->capacity - 1;
+		for (int32 i = (index == 0 ? 0 : index-1); i < this->capacity; i++)
 			this->arr[i] = this->arr[i + 1];
 		this->curr_pos--;
 		this->a_end = this->curr_pos;
+		this->len = this->curr_pos;
 	}
 	else
 		throw ArrayOutOfBounds(const_cast<char*>("LGE::ArrayOutOfBounds Exception "));
@@ -267,18 +293,19 @@ LGE_CUDA_FUNC_DECL Array<T, E>& Array<T, E>::removeAt(uint32 index) {
 
 template <typename T, uint32 E>
 LGE_CUDA_FUNC_DECL Array<T, E>& Array<T, E>::shift() {
-	this->len = this->len - 1;
-	for (int32 i = 0; i < this->len; i++)
+	this->capacity = this->capacity - 1;
+	for (int32 i = 0; i < this->capacity; i++)
 		this->arr[i] = this->arr[i + 1];
 	this->curr_pos--;
 	this->a_end = this->curr_pos;
+	this->len = this->curr_pos;
 	return *this;
 }
 
 template <typename T, uint32 E>
 LGE_CUDA_FUNC_DECL Array<T, E>& Array<T, E>::pop() {
-	this->len = this->len - 1;
-	for (int32 i = this->len; i > this->len; i--)
+	this->capacity = this->capacity - 1;
+	for (int32 i = this->capacity; i > this->capacity; i--)
 		this->arr[i] = this->arr[i - 1];
 	this->curr_pos--;
 	this->a_end = this->curr_pos;
@@ -287,7 +314,7 @@ LGE_CUDA_FUNC_DECL Array<T, E>& Array<T, E>::pop() {
 
 template <typename T, uint32 E>
 LGE_CUDA_FUNC_DECL T Array<T, E>::getItemAt(uint32 index) {
-	if (index < this->len)
+	if (index < this->capacity)
 		return this->arr[index];
 	else
 		throw ArrayOutOfBounds(const_cast<char*>("LGE::ArrayOutOfBounds Exception "));
@@ -296,7 +323,7 @@ LGE_CUDA_FUNC_DECL T Array<T, E>::getItemAt(uint32 index) {
 template <typename T, uint32 E>
 LGE_CUDA_FUNC_DECL T Array<T, E>::largestItem() {
 	T lItem = NULL;
-	for (int32 x = 0; x < this->len; x++)
+	for (int32 x = 0; x < this->capacity; x++)
 		if (this->arr[x] > lItem)
 			lItem = this->arr[x];
 	return lItem;
@@ -305,7 +332,7 @@ LGE_CUDA_FUNC_DECL T Array<T, E>::largestItem() {
 template <typename T, uint32 E>
 LGE_CUDA_FUNC_DECL T Array<T, E>::smallestItem() {
 	T sItem = INT_MAX - 1;
-	for (int32 x = 0; x < this->len; x++)
+	for (int32 x = 0; x < this->capacity; x++)
 		if (this->arr[x] < sItem)
 			sItem = this->arr[x];
 	return sItem;
@@ -342,7 +369,7 @@ LGE_CUDA_FUNC_DECL void Array<T, E>::rotate(int32 rotFactor) {
 	if (rotFactor == 0)
 		return;
 
-	rotFactor = rotFactor & this->len;
+	rotFactor = rotFactor & this->capacity;
 
 	__inner_reverse__(this->arr, 0, rotFactor - 1);
 	__inner_reverse__(this->arr, rotFactor, this->a_end - 1);
@@ -351,7 +378,7 @@ LGE_CUDA_FUNC_DECL void Array<T, E>::rotate(int32 rotFactor) {
 
 template <typename T, uint32 E>
 LGE_CUDA_FUNC_DECL bool Array<T, E>::isOdd(uint32 index) {
-	if (index < this->len)
+	if (index < this->capacity)
 		if (this->arr[index] % 2 == 0)
 			return false;
 		else
@@ -362,7 +389,7 @@ LGE_CUDA_FUNC_DECL bool Array<T, E>::isOdd(uint32 index) {
 
 template <typename T, uint32 E>
 LGE_CUDA_FUNC_DECL bool Array<T, E>::isEven(uint32 index) {
-	if (index < this->len)
+	if (index < this->capacity)
 		if (this->arr[index] % 2 == 0)
 			return true;
 		else
@@ -373,7 +400,7 @@ LGE_CUDA_FUNC_DECL bool Array<T, E>::isEven(uint32 index) {
 
 template <typename T, uint32 E>
 LGE_CUDA_FUNC_DECL bool Array<T, E>::includes(T item) {
-	for (int32 i = 0; i < this->len; i++)
+	for (int32 i = 0; i < this->capacity; i++)
 		if (this->arr[i] == item)
 			return true;
 	return false;
@@ -381,7 +408,7 @@ LGE_CUDA_FUNC_DECL bool Array<T, E>::includes(T item) {
 
 template <typename T, uint32 E>
 LGE_CUDA_FUNC_DECL void Array<T, E>::pprint() {
-	for (int32 x = 0; x < this->len; x++)
+	for (int32 x = 0; x < this->capacity; x++)
 		printf("Index: %i -> value: %i\n", x, this->arr[x]);
 }
 
@@ -390,7 +417,7 @@ LGE_CUDA_FUNC_DECL void Array<T, E>::pprint() {
 
 template <typename T, uint32 E>
 LGE_CUDA_FUNC_DECL T& Array<T, E>::operator [] (uint32 index) {
-	if (index < this->len) {
+	if (index < this->capacity) {
 		return this->arr[index];
 	}
 	else
@@ -399,7 +426,7 @@ LGE_CUDA_FUNC_DECL T& Array<T, E>::operator [] (uint32 index) {
 
 template <typename T, uint32 E>
 LGE_CUDA_FUNC_DECL T Array<T, E>::operator [] (uint32 index) const {
-	if (index < this->len)
+	if (index < this->capacity)
 		return this->arr[index];
 	else
 		throw ArrayOutOfBounds(const_cast<char*>("LGE::ArrayOutOfBounds Exception "));
@@ -408,42 +435,40 @@ LGE_CUDA_FUNC_DECL T Array<T, E>::operator [] (uint32 index) const {
 
 template <typename T, uint32 E>
 LGE_CUDA_FUNC_DECL Array<T, E> Array<T, E>::operator = (const Array& a) {
-	for (int32 i = 0; i < this->len; i++)
+	for (int32 i = 0; i < this->capacity; i++)
 		this->arr[i] = a.arr[i];
-	this->len = a.len;
 	this->a_begin = a.a_begin;
 	this->a_end = a.a_end;
 	this->size = a.size;
 	this->curr_pos = a.curr_pos;
-	this->size = a.size;
+	this->len = this->curr_pos;
 	return *this;
 }
 
 template <typename T, uint32 E>
 LGE_CUDA_FUNC_DECL Array<T, E> Array<T, E>::operator = (Array& a) {
-	for (int32 i = 0; i < this->len - 1; i++)
+	for (int32 i = 0; i < this->capacity - 1; i++)
 		this->arr[i] = a.arr[i];
-	this->len = a.len;
 	this->a_begin = a.a_begin;
 	this->a_end = a.a_end;
 	this->size = a.size;
 	this->curr_pos = a.curr_pos;
-	this->size = a.size;
+	this->len = this->curr_pos;
 	return *this;
 }
 
 template <typename T, uint32 E>
 LGE_CUDA_FUNC_DECL Array<T, E> Array<T, E>::operator = (T a[]) {
-	if (__lge_len(a) > this->len)
+	if (__lge_len(a) > this->capacity)
 		throw ArrayOutOfBounds(const_cast<char*>("LGE::ArrayOutOfBounds Exception "));
 
-	for (int32 i = 0; i < this->len; i++)
+	for (int32 i = 0; i < this->capacity; i++)
 		this->arr[i] = a[i];
 
 	this->curr_pos = __lge_len(this->arr);
 	this->a_begin = 0;
 	this->a_end = this->curr_pos;
-	this->size = sizeof(this->arr);
+	this->len = this->curr_pos;
 	return *this;
 }
 
@@ -454,11 +479,11 @@ LGE_CUDA_FUNC_DECL Array<T, E> Array<T, E>::operator = (T a[]) {
 template <typename T>
 List<T>::List()
 #ifdef LGE_HAS_INITIALIZER_LIST
-	: size(sizeof(T) * 10), len(0)
+	: Collection(sizeof(T) * 10, 0)
 #endif
 {
 #ifndef LGE_HAS_INITIALIZER_LIST
-	this->size = LGE_LIST_BUFFER;
+	this->size = sizeof(T) * 10;
 	this->len = 0;
 #endif
 
@@ -469,7 +494,7 @@ List<T>::List()
 template <typename T>
 List<T>::List(List& l)
 #ifdef LGE_HAS_INITIALIZER_LIST
-	: size(l.size), len(l.len)
+	: Collection(l.size, l.len)
 #endif
 {
 #ifndef LGE_HAS_INITIALIZER_LIST
@@ -484,7 +509,7 @@ List<T>::List(List& l)
 template <typename T>
 List<T>::List(const List& l)
 #ifdef LGE_HAS_INITIALIZER_LIST
-	: size(l.size), len(l.len)
+	: Collection(l.size, l.len)
 #endif
 {
 #ifndef LGE_HAS_INITIALIZER_LIST
@@ -499,7 +524,7 @@ List<T>::List(const List& l)
 template <typename T>
 List<T>::List(const std::initializer_list<T>& ilist)
 #ifdef LGE_HAS_INITIALIZER_LIST
-	: size(sizeof(T) * 10), len(0)
+	: Collection(sizeof(T) * 10, 0)
 #endif
 {
 #ifndef LGE_HAS_INITIALIZER_LIST
@@ -696,7 +721,7 @@ LGE_CUDA_FUNC_DECL List<T> List<T>::operator = (List& l) {
 template <typename T>
 sLinkedList<T>::sLinkedList()
 #ifdef LGE_HAS_INITIALIZER_LIST
-	: size(0), len(0), head(NULL)
+	: Collection(0, 0), head(NULL)
 #endif
 {
 #ifndef  LGE_HAS_INITIALIZER_LIST
@@ -710,7 +735,7 @@ sLinkedList<T>::sLinkedList()
 template <typename T>
 sLinkedList<T>::sLinkedList(const sLinkedList& ll)
 #ifdef LGE_HAS_INITIALIZER_LIST
-	: size(ll.size), len(ll.len), head(ll.head)
+	: Collection(ll.size, ll.len), head(ll.head)
 #endif
 {
 #ifndef LGE_HAS_INITIALIZER_LIST
@@ -968,11 +993,13 @@ LGE_CUDA_FUNC_DECL sLinkedList<T> sLinkedList<T>::operator = (const sLinkedList&
 template <typename T, uint32 C>
 Stack<T, C>::Stack()
 #ifdef LGE_HAS_INITIALIZER_LIST
-	: size(sizeof(T)* C), top(0)
+	: Collection(sizeof(T)* C, 0, C), top(0)
 #endif
 {
 #ifndef LGE_HAS_INITIALIZER_LIST
 	this->size = sizeof(T) * C;
+	this->len = 0;
+	this->capacity = C;
 	this->top = 0;
 #endif
 }
@@ -980,11 +1007,13 @@ Stack<T, C>::Stack()
 template <typename T, uint32 C>
 Stack<T, C>::Stack(const Stack& s)
 #ifdef LGE_HAS_INITIALIZER_LIST
-	: size(s.size), top(s.top)
+	: Collection(s.size, s.len, s.capacity), top(s.top)
 #endif
 {
 #ifndef LGE_HAS_INITIALIZER_LIST
 	this->size = s.size;
+	this->len = s.len;
+	this->capacity = s.capacity;
 	this->top = s.top;
 #endif
 }
@@ -998,6 +1027,7 @@ LGE_CUDA_FUNC_DECL Stack<T, C>& Stack<T, C>::push(T v) {
 		this->sarr.insertAt(v, top);
 		this->top++;
 		this->size += sizeof(T);
+		this->len = this->top;
 	}
 
 	return *this;
@@ -1011,6 +1041,7 @@ LGE_CUDA_FUNC_DECL void Stack<T, C>::pop() {
 	else {
 		this->sarr[--top];
 		this->size -= sizeof(T);
+		this->len = this->top;
 	}
 }
 
@@ -1054,6 +1085,7 @@ LGE_CUDA_FUNC_DECL Stack<T, C>& Stack<T, C>::pprint() {
 template <typename T, uint32 C>
 LGE_CUDA_FUNC_DECL T& Stack<T, C>::operator [] (uint32 index) {
 	this->top++;
+	this->len = this->top;
 	return this->sarr[index];
 }
 
@@ -1066,7 +1098,7 @@ template <typename T, uint32 C>
 LGE_CUDA_FUNC_DECL Stack<T, C> Stack<T, C>::operator = (const Stack& s) {
 	this->sarr = s.sarr;
 	this->size = s.size;
-	this->max_capacity = s.max_capacity;
+	this->capacity = s.capacity;
 	this->top = s.top;
 	return *this;
 }
@@ -1078,28 +1110,30 @@ LGE_CUDA_FUNC_DECL Stack<T, C> Stack<T, C>::operator = (const Stack& s) {
 template <typename T, uint32 C>
 Queue<T, C>::Queue()
 #ifdef LGE_HAS_INITIALIZER_LIST
-	: size(0), front(0), rear(C - 1), len(0)
+	: Collection(0, 0, C), front(0), rear(C - 1)
 #endif
 {
 #ifndef LGE_HAS_INITIALIZER_LIST
 	this->size = 0;
+	this->len = 0;
+	this->capacity = C;
 	this->front = 0;
 	this->rear = C - 1;
-	this->len = 0;
 #endif
 }
 
 template <typename T, uint32 C>
 Queue<T, C>::Queue(const Queue& q)
 #ifdef LGE_HAS_INITIALIZER_LIST
-	: size(q.size), front(q.front), rear(q.rear), len(q.len)
+	: Collection(q.size, q.len, C), front(q.front), rear(q.rear)
 #endif
 {
 #ifndef LGE_HAS_INITIALIZER_LIST
-	this->size = q.size;
+	this->size = 0;
+	this->len = 0;
+	this->capacity = C;
 	this->front = q.front;
 	this->rear = q.rear;
-	this->len = q.len;
 #endif
 }
 
@@ -1107,7 +1141,7 @@ template <typename T, uint32 C>
 LGE_CUDA_FUNC_DECL void Queue<T, C>::enqueue(T item) {
 	if (this->isFull())
 		return;
-	this->rear = (this->rear + 1) % this->max_capacity;
+	this->rear = (this->rear + 1) % this->capacity;
 	this->qarr.insertAt(item, this->rear);
 	this->len = this->len + 1;
 	this->size += sizeof(T);
@@ -1118,7 +1152,7 @@ LGE_CUDA_FUNC_DECL T Queue<T, C>::dequeue() {
 	if (this->isEmpty())
 		return INT_MIN;
 	T item = this->qarr[this->front];
-	this->front = (this->front + 1) % this->max_capacity;
+	this->front = (this->front + 1) % this->capacity;
 	this->len = this->len - 1;
 	this->size += sizeof(T);
 	return item;
@@ -1126,7 +1160,7 @@ LGE_CUDA_FUNC_DECL T Queue<T, C>::dequeue() {
 
 template <typename T, uint32 C>
 LGE_CUDA_FUNC_DECL bool Queue<T, C>::isFull() {
-	return this->len == this->max_capacity;
+	return this->len == this->capacity;
 }
 
 template <typename T, uint32 C>
@@ -1146,12 +1180,12 @@ LGE_CUDA_FUNC_DECL T Queue<T, C>::getRear() {
 
 template <typename T, uint32 C>
 LGE_CUDA_FUNC_DECL Queue<T, C> Queue<T, C>::operator = (const Queue& q) {
-	for (int32 i = 0; i < max_capacity - 1; i++)
+	for (int32 i = 0; i < capacity - 1; i++)
 		this->qarr[i] = q.qarr[i];
 	this->size = q.size;
 	this->front = q.front;
 	this->rear = q.rear;
-	this->max_capacity = q.max_capacity;
+	this->max_capacity = q.capacity;
 	this->len = q.len;
 	return *this;
 }
@@ -1174,7 +1208,7 @@ template <typename T>
 LGE_CUDA_FUNC_DECL int32 ifind(List<T> list, T value) {
 	int32 index;
 
-	for (index = 0; i < list.len; index++)
+	for (index = 0; i < list.length(); index++)
 		if (list[index] == value)
 			return index;
 
@@ -1187,7 +1221,7 @@ template <typename T>
 LGE_CUDA_FUNC_DECL T find(List<T> list, T value) {
 	int32 index;
 
-	for (index = 0; index < list.len; index++)
+	for (index = 0; index < list.length(); index++)
 		if (list[index] == value)
 			return list[index];
 

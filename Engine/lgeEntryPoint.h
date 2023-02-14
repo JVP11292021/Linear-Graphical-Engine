@@ -26,6 +26,8 @@ int main(int argc, char** argv) {
 	LGE_AUTO app = lge::createApplication();
 	app->run();
 	delete app;
+
+	return 1;
 }
 
 #endif

@@ -24,16 +24,53 @@
 
 #define LGE_LIST_DS 1
 #define LGE_LIST_US 0
-
+#define LGE_NO_MAX -1
 
 _LGE_BEGIN_NP_LGE_CORE
+
+class LGE_API Collection {
+protected:
+	size_t size;
+	uint32 len;
+	int32 capacity;
+
+public:
+	Collection()
+#ifdef LGE_HAS_INITIALIZER_LIST
+		: size(0), len(0), capacity(LGE_NO_MAX)
+#endif
+	{
+#ifndef LGE_HAS_INITIALIZER_LIST
+		this->size = 0;
+		this->len = 0;
+		this->capacity = LGE_NO_MAX;
+#endif
+	}
+
+	Collection(size_t size, uint32 len, uint32 capacity = LGE_NO_MAX)
+#ifdef LGE_HAS_INITIALIZER_LIST
+		: size(size), len(len), capacity(capacity)
+#endif
+	{
+#ifndef LGE_HAS_INITIALIZER_LIST
+		this->size = size;
+		this->len = len;
+		this->capacity = capacity;
+#endif
+	}
+
+	LGE_CUDA_FUNC_DECL LGE_INLINE size_t getSize() const { return this->size; }
+	LGE_CUDA_FUNC_DECL LGE_INLINE uint32 length() const { return this->len; }
+	LGE_CUDA_FUNC_DECL LGE_INLINE int32 max_capacity() const { return this->capacity; }
+
+};
 
 // =====================================================================
 // Couple class
 // =====================================================================
 
 template <typename TF, typename TL>
-class Couple {
+class Couple : public Collection {
 private:
 	TF first;
 	TF last;
@@ -57,13 +94,11 @@ public:
 
 
 template <typename T>
-class Tuple {
+class Tuple : public Collection {
 private:
 	T data[12];
-	size_t size;
 
 public:
-	uint32 len;
 
 	Tuple();
 	Tuple(int32, ...);
@@ -89,15 +124,13 @@ public:
 /// </summary>
 /// <typeparam name="T"></typeparam>
 template <typename T, uint32 E>
-class Array {
+class Array : public Collection {
 private:
 	T arr[E];
-	size_t size;
-	uint32 a_begin = 0;
-	uint32 a_end = 0;
+	uint32 a_begin;
+	uint32 a_end;
 
 public:
-	uint32 len = E;
 	uint32 curr_pos = 0;
 
 	/// <summary>
@@ -159,18 +192,13 @@ public:
 /// </summary>
 /// <typeparam name="T"></typeparam>
 template <typename T>
-class  List {
+class List : public Collection {
 private:
 	T* l = (T*)malloc(sizeof(T) * 10);
-	size_t size;
-
+private:
 	LGE_CUDA_FUNC_DECL T* resize(T* oldArr, size_t, size_t);
 
-
 public:
-	uint32 len;
-
-
 	List();
 	List(List&);
 	List(const List&);
@@ -214,7 +242,7 @@ public:
 /// </summary>
 /// <typeparam name="T"></typeparam>
 template <typename T>
-struct  sNode {
+struct sNode {
 	T data;
 	struct sNode<T>* link;
 	size_t size;
@@ -225,7 +253,7 @@ struct  sNode {
 /// </summary>
 /// <typeparam name="T"></typeparam>
 template <typename T>
-struct  dNode {
+struct dNode {
 	struct dNode<T>* h_link;
 	T data;
 	struct dNode<T>* t_link;
@@ -237,14 +265,11 @@ struct  dNode {
 /// </summary>
 /// <typeparam name="T"></typeparam>
 template <typename T>
-class  sLinkedList {
+class sLinkedList : public Collection {
 private:
-	size_t size;
 	struct sNode<T>* head;
 
 public:
-	uint32 len;
-
 	sLinkedList();
 	sLinkedList(const sLinkedList&);
 	~sLinkedList();
@@ -281,13 +306,11 @@ public:
 /// </summary>
 /// <typeparam name="T"></typeparam>
 template <typename T, uint32 C>
-class  Stack {
+class  Stack : public Collection {
 private:
-	size_t size;
 	Array<T, C> sarr = Array<T, C>();
 
 public:
-	uint32 max_capacity = C;
 	int32 top;
 
 	Stack();
@@ -319,24 +342,20 @@ public:
 /// </summary>
 /// <typeparam name="T"></typeparam>
 template <typename T, uint32 C>
-class  Queue {
+class  Queue : public Collection {
 private:
-	uint32 max_capacity = C;
-	size_t size;
 	Array<T, C> qarr = Array<T, C>();
 	int32 front;
 	int32 rear;
 
 public:
-	int32 len;
-
 	Queue();
 	Queue(const Queue&);
 
 	LGE_CUDA_FUNC_DECL void enqueue(T item);
 	LGE_CUDA_FUNC_DECL T dequeue();
-	LGE_CUDA_FUNC_DECL LGE_INLINE bool isFull();
-	LGE_CUDA_FUNC_DECL LGE_INLINE bool isEmpty();
+	LGE_CUDA_FUNC_DECL bool isFull();
+	LGE_CUDA_FUNC_DECL bool isEmpty();
 	LGE_CUDA_FUNC_DECL T getFront();
 	LGE_CUDA_FUNC_DECL T getRear();
 	LGE_CUDA_FUNC_DECL void pprint();
@@ -362,6 +381,33 @@ class  Dictionary {
 
 };
 
+// =====================================================================
+// Collection types
+// =====================================================================
+
+template <typename TF, typename TL>
+using couple = Couple<TF, TL>;
+
+template <typename T, uint32 E>
+using array = Array<T, E>;
+
+template <typename T>
+using list = List<T>;
+
+template <typename T>
+using dict = Dictionary<T>;
+
+template <typename T, uint32 C>
+using queue = Queue<T, C>;
+
+template <typename T>
+using linkedlist = sLinkedList<T>;
+
+template <typename T, uint32 C>
+using stack = Stack<T, C>;
+
+template <typename T>
+using tuple = Tuple<T>;
 
 // =====================================================================
 // Functional paradigm functions

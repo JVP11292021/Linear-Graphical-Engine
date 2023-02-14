@@ -20,7 +20,7 @@ LayerStack::LayerStack() {
 }
 
 LayerStack::~LayerStack() {
-	for (int32 i = 0; i < this->layers.len; i++) {
+	for (int32 i = 0; i < this->layers.length(); i++) {
 		this->layers[i]->onDetach();
 		delete this->layers[i];
 	}
