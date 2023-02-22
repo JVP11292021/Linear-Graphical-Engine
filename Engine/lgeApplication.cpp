@@ -40,7 +40,6 @@ LGE_CUDA_FUNC_DECL void Application::onEvent(hid::Event& e) {
 
 	std::cout << "Event: " << e << "\n";
 	
-	 //This part could/causes lge::ArrayOutOfBounds exception
 	for (uint32 i = 0; i < this->layerStack.getLen(); i++) {
 		if (e.handled)
 			break;

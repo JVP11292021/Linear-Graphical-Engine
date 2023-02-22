@@ -37,6 +37,97 @@
 
 _LGE_BEGIN_NP_LGE_GFX
 
+/*
+Typetraits for basic OpenGL types.
+Making use of template meta-programming.
+*/
+
+template <typename T>
+LGE_API
+struct gl_trait 
+	final {
+public:
+	typedef T basic_type;
+};
+
+
+template<>
+LGE_API
+struct gl_trait<GLbyte> 
+	final {
+public:
+	enum { type = GL_BYTE };
+	enum { count = 1 };
+	enum { stride = sizeof(int8) };
+	typedef GLbyte basic_type;
+};
+
+template<>
+LGE_API
+struct gl_trait<GLshort> 
+	final {
+public:
+	enum { type = GL_SHORT };
+	enum { count = 2 };
+	enum { stride = sizeof(int16) };
+	typedef GLshort basic_type;
+};
+
+template<>
+LGE_API
+struct gl_trait<GLushort> 
+	final {
+public:
+	enum { type = GL_UNSIGNED_SHORT };
+	enum { count = 2 };
+	enum { stride = sizeof(uint16) };
+	typedef GLushort basic_type;
+};
+
+template<>
+LGE_API
+struct gl_trait<GLint> 
+	final {
+public:
+	enum { type = GL_INT };
+	enum { count = 4 };
+	enum { stride = sizeof(int32) };
+	typedef GLint basic_type;
+};
+
+template<>
+LGE_API
+struct gl_trait<GLuint> 
+	final {
+public:
+	enum { type = GL_UNSIGNED_INT };
+	enum { count = 4 };
+	enum { stride = sizeof(uint32) };
+	typedef GLuint basic_type;
+};
+
+template<>
+LGE_API
+struct gl_trait<GLfloat> 
+	final {
+public:
+	enum { type = GL_FLOAT };
+	enum { count = 4 };
+	enum { stride = sizeof(f32) };
+	typedef GLfloat basic_type;
+};
+
+template<>
+LGE_API
+struct gl_trait<GLdouble> 
+	final {
+public:
+	enum { type = GL_DOUBLE };
+	enum { count = 8 };
+	enum { stride = sizeof(f64) };
+	typedef GLdouble basic_type;
+};
+
 // =====================================================================
 // Gl renderer API class
 // =====================================================================
@@ -50,28 +141,29 @@ public:
 };
 
 // =====================================================================
-// GlTexture class
+// GlTexture2D class(es)
 // =====================================================================
 
-class LGE_API GlTexture : public Texture {
+class LGE_API GlTexture2D : public Texture2D {
 private:
 	LGE_CUDA_FUNC_DECL void destroy();
 private:
+	uint32 ID;
 	uint8* localBuffer;
 	int32 width, height, bbp;
 
 public:
-	GlTexture(const std::string&);
-	~GlTexture();
+	GlTexture2D(const std::string&);
+	~GlTexture2D();
 
-	LGE_CLS_NON_COPIABLE(GlTexture)
-	LGE_CLS_CTOR_MOVE(GlTexture)
+	LGE_CLS_NON_COPIABLE(GlTexture2D)
+	LGE_CLS_CTOR_MOVE(GlTexture2D)
 
 	LGE_CUDA_FUNC_DECL void bind(uint32 = 0) const override;
 	LGE_CUDA_FUNC_DECL void unbind() const override;
 
-	LGE_CUDA_FUNC_DECL LGE_INLINE int32 getWidth() const { return this->width; }
-	LGE_CUDA_FUNC_DECL LGE_INLINE int32 getHeight() const { return this->height; }
+	LGE_CUDA_FUNC_DECL LGE_INLINE int32 getWidth() const override { return this->width; }
+	LGE_CUDA_FUNC_DECL LGE_INLINE int32 getHeight() const override { return this->height; }
 	LGE_CUDA_FUNC_DECL LGE_INLINE int32 getBBP() const { return this->bbp; }
 
 };

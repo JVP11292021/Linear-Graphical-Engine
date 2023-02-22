@@ -11,33 +11,41 @@
 |________________________________________________________________________________________|
 */
 
-#ifndef __LGE_TEXTURE_INTERFACE__
-#define __LGE_TEXTURE_INTERFACE__
+#ifndef __LGE_COLOR__
+#define __LGE_COLOR__
 
 #include "engine_setup.h"
 
-_LGE_BEGIN_NP_LGE_GFX
+#include <../lmm/lmm.h>
 
-class LGE_API Texture {
-protected:
-	std::string path;
+_LGE_BEGIN_NP_LGE
+
+class 
+	LGE_API Color {
+private:
+	lmm::vec4 color;
 
 public:
-	LGE_CLS_DTOR_DEFAULT(Texture)
-	
-	LGE_CUDA_FUNC_DECL virtual void bind(uint32 = 0) const = 0;
-	LGE_CUDA_FUNC_DECL virtual void unbind() const = 0;
+	LGE_CLS_CTOR_DEFAULT(Color)
 
-	LGE_CUDA_FUNC_DECL virtual int32 getWidth() const = 0;
-	LGE_CUDA_FUNC_DECL virtual int32 getHeight() const = 0;
+	Color(int64);
+	Color(f32, f32, f32);
+	Color(f32, f32, f32, f32);
+
+	operator lmm::vec4() { return this->color; }
+
+	LGE_CUDA_FUNC_DECL void normal() noexcept;
+	LGE_CUDA_FUNC_DECL int64 toHex() noexcept;
+	LGE_CUDA_FUNC_DECL lmm::vec4 RGBA() noexcept;
+
+	LGE_CUDA_FUNC_DECL LGE_STATIC int64 toHex(const lmm::vec4&) noexcept;
+	LGE_CUDA_FUNC_DECL LGE_STATIC lmm::vec4 toRGB(int64) noexcept;
 
 };
 
-class LGE_API Texture2D : public Texture {
-public:
-	LGE_CUDA_FUNC_DECL LGE_STATIC Texture2D* create(const std::string&);
-};
+__declspec(selectany) int64 (*to_hex)(const lmm::vec4&) = &Color::toHex;
+__declspec(selectany) lmm::vec4 (*to_rgb)(int64) = &Color::toRGB;
 
-_LGE_END_NP_LGE_GFX
+_LGE_END_NP_LGE
 
-#endif
+#endif 

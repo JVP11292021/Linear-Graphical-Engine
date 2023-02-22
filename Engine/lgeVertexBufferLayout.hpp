@@ -29,7 +29,7 @@ struct LGE_API BufferElement {
 	uint32 size;
 	bool normalized;
 
-	BufferElement() = default;
+	LGE_CLS_CTOR_DEFAULT(BufferElement)
 
 	BufferElement(glShaderDataTypes type, std::string& name)
 #ifdef LGE_HAS_INITIALIZER_LIST

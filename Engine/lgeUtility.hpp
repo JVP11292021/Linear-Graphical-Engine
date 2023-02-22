@@ -33,7 +33,7 @@ bool issame(const T1& _X, const T2& _Y) noexcept {
 
 template <class T>
 LGE_API LGE_CUDA_FUNC_DECL 
-T rand_t(const T _L, const T _H, const int64 _MAX = 1000) noexcept {
+T rand_t(const T _L, const T _H, const int32 _MAX = 1000) noexcept {
     return (T)(_L + (_H - _L) * (rand() % _MAX) / _MAX);
 }
 

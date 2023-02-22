@@ -16,6 +16,7 @@
 #include "lgeTexture.hpp"
 #include "lgeVertexArray.hpp"
 #include "GL_API.h"
+#include "lgeRenderer.hpp"
 
 _LGE_BEGIN_NP_LGE_GFX
 
@@ -24,11 +25,23 @@ _LGE_BEGIN_NP_LGE_GFX
 // =====================================================================
 
 LGE_CUDA_FUNC_DECL Shader* Shader::create(std::string& shaderPath) {
-	return new GlShader(shaderPath);
+	switch (Renderer::getAPI()) {
+	case RenderAPI::API::NONE:	lgeASSERT(LGE_FALSE);
+	case RenderAPI::API::GL:	return new GlShader(shaderPath);
+	}
+
+	lgeASSERT(LGE_FALSE);
+	return nullptr;
 }
 
 LGE_CUDA_FUNC_DECL Shader* Shader::create(istr vertex, istr fragment, istr geometry) {
-	return new GlShader(vertex, fragment, geometry);
+	switch (Renderer::getAPI()) {
+	case RenderAPI::API::NONE:	lgeASSERT(LGE_FALSE);
+	case RenderAPI::API::GL:	return new GlShader(vertex, fragment, geometry);
+	}
+
+	lgeASSERT(LGE_FALSE);
+	return nullptr;
 }
 
 // =====================================================================
@@ -36,7 +49,13 @@ LGE_CUDA_FUNC_DECL Shader* Shader::create(istr vertex, istr fragment, istr geome
 // =====================================================================
 
 LGE_CUDA_FUNC_DECL IndexBuffer* IndexBuffer::create(const void* data, uint32 count) {
-	return new GlIndexBuffer(data, count);
+	switch (Renderer::getAPI()) {
+	case RenderAPI::API::NONE:	lgeASSERT(LGE_FALSE);
+	case RenderAPI::API::GL:	return new GlIndexBuffer(data, count);
+	}
+
+	lgeASSERT(LGE_FALSE);
+	return nullptr;
 }
 
 // =====================================================================
@@ -44,15 +63,27 @@ LGE_CUDA_FUNC_DECL IndexBuffer* IndexBuffer::create(const void* data, uint32 cou
 // =====================================================================
 
 LGE_CUDA_FUNC_DECL VertexBuffer* VertexBuffer::create(const void* data, uint32 size) {
-	return new GlVertexBuffer(data, size);
+	switch (Renderer::getAPI()) {
+	case RenderAPI::API::NONE:	lgeASSERT(LGE_FALSE);
+	case RenderAPI::API::GL:	return new GlVertexBuffer(data, size);
+	}
+
+	lgeASSERT(LGE_FALSE);
+	return nullptr;
 }
 
 // =====================================================================
-// Texture
+// Textures
 // =====================================================================
 
-LGE_CUDA_FUNC_DECL Texture* Texture::create(std::string& path) {
-	return new GlTexture(path);
+LGE_CUDA_FUNC_DECL Texture2D* Texture2D::create(const std::string& path) {
+	switch (Renderer::getAPI()) {
+	case RenderAPI::API::NONE:	lgeASSERT(LGE_FALSE);
+	case RenderAPI::API::GL:	return new GlTexture2D(path);
+	}
+
+	lgeASSERT(LGE_FALSE);
+	return nullptr;
 }
 
 // =====================================================================
@@ -60,7 +91,12 @@ LGE_CUDA_FUNC_DECL Texture* Texture::create(std::string& path) {
 // =====================================================================
 
 LGE_CUDA_FUNC_DECL VertexArray* VertexArray::create() {
-	return new GlVertexArray();
+	switch (Renderer::getAPI()) {
+	case RenderAPI::API::NONE:	lgeASSERT(LGE_FALSE);
+	case RenderAPI::API::GL:	return new GlVertexArray();
+	}
+
+	return nullptr;
 }
 
 _LGE_END_NP_LGE_GFX

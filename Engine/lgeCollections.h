@@ -382,34 +382,6 @@ class  Dictionary {
 };
 
 // =====================================================================
-// Collection types
-// =====================================================================
-
-template <typename TF, typename TL>
-using couple = Couple<TF, TL>;
-
-template <typename T, uint32 E>
-using array = Array<T, E>;
-
-template <typename T>
-using list = List<T>;
-
-template <typename T>
-using dict = Dictionary<T>;
-
-template <typename T, uint32 C>
-using queue = Queue<T, C>;
-
-template <typename T>
-using linkedlist = sLinkedList<T>;
-
-template <typename T, uint32 C>
-using stack = Stack<T, C>;
-
-template <typename T>
-using tuple = Tuple<T>;
-
-// =====================================================================
 // Functional paradigm functions
 // =====================================================================
 
@@ -445,4 +417,37 @@ _LGE_END_NP_LGE_CORE
 #	ifndef LGE_FORCE_EXTERNAL_TEMPLATE
 #		include "lgeCollections.inl"
 #	endif
+
+_LGE_BEGIN_NP_LGE
+
+// =====================================================================
+// Collection types
+// =====================================================================
+
+template <typename TF, typename TL>
+using couple = core::Couple<TF, TL>;
+
+template <typename T, uint32 E>
+using array = core::Array<T, E>;
+
+template <typename T>
+using list = core::List<T>;
+
+template <typename T>
+using dict = core::Dictionary<T>;
+
+template <typename T, uint32 C>
+using queue = core::Queue<T, C>;
+
+template <typename T>
+using linkedlist = core::sLinkedList<T>;
+
+template <typename T, uint32 C>
+using stack = core::Stack<T, C>;
+
+template <typename T>
+using tuple = core::Tuple<T>;
+
+_LGE_END_NP_LGE
+
 #endif

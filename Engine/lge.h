@@ -43,6 +43,7 @@ namespace lmm {
 #include "lgeTextureManager.hpp"
 #include "lgeVideoManager.hpp"
 
+#include "lgeColor.hpp"
 #include "lgeUtility.hpp"
 #include "lgeLogging.hpp"
 #include "lgeSmartPtr.hpp"

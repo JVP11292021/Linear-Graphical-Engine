@@ -14,8 +14,6 @@
 #ifndef __LGE_ENGINE_SETUP__
 #define __LGE_ENGINE_SETUP__
 
-#	pragma warning(disable : 4067) // To disable some very annoying warnings i couldn't get rid of
-
 #	define __LGE_MAJOR__		0.1
 #	define __LGE_MINOR__		0.0
 #	define __LGE_PATCH__		0.0
@@ -230,6 +228,33 @@
 #	else
 #		define LGE_CUDA_FUNC_DEF
 #		define LGE_CUDA_FUNC_DECL
+#	endif
+
+// Disable some of MSVC most aggressive Debug runtime checks in function header/footer (used in some simple/low-level functions)
+#	if defined(_MSC_VER) && !defined(__clang__)  && !defined(__INTEL_COMPILER)
+#		define LGE_MSVC_RUNTIME_CHECKS_OFF      __pragma(runtime_checks("",off))     __pragma(check_stack(off)) __pragma(strict_gs_check(push,off))
+#		define LGE_MSVC_RUNTIME_CHECKS_RESTORE  __pragma(runtime_checks("",restore)) __pragma(check_stack())    __pragma(strict_gs_check(pop))
+#	else
+#		define LGE_MSVC_RUNTIME_CHECKS_OFF
+#		define LGE_MSVC_RUNTIME_CHECKS_RESTORE
+#	endif
+
+// Warnings
+#	ifdef _MSC_VER
+#		pragma warning (push)
+#		pragma warning (disable: 26495)     // [Static Analyzer] Variable 'XXX' is uninitialized. Always initialize a member variable	(type.6).
+#		pragma warning (disable : 4067)		// [line:indent] C4067 unexpected token.
+#	endif
+#	if defined(__clang__)
+#		pragma clang diagnostic push
+#		pragma clang diagnostic ignored "-Wold-style-cast"
+#		if __has_warning("-Wzero-as-null-pointer-constant")
+#			pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
+#		endif
+#	elif defined(__GNUC__)
+#		pragma GCC diagnostic push
+#		pragma GCC diagnostic ignored "-Wpragmas"          // warning: unknown option after '#pragma GCC diagnostic' kind
+#		pragma GCC diagnostic ignored "-Wclass-memaccess"  // [__GNUC__ >= 8] warning: 'memset/memcpy' clearing/writing an object of type	'xxxx' with no trivial copy-assignment; use assignment or value-initialization instead
 #	endif
 
 // =====================================================================
@@ -493,8 +518,8 @@ Makes a class only movable, but non-copiable.
 /*
 Declare default copy constructor explicitly
 */
-#	define LGE_CLS_CTOR_COPY_DEFAULT(name) name(const name&) = default;\
-										   LGE_CUDA_FUNC_DECL name& operator = (const name&) = default;
+#	define LGE_CLS_CTOR_COPY_DEFAULT(name) name(const name&) noexcept = default;\
+										   LGE_CUDA_FUNC_DECL name& operator = (const name&) noexcept = default;
 
 /*
 Defines io operators for a class
@@ -1283,6 +1308,8 @@ _LGE_END_C_DECLS
 
 #	ifdef LGE_HAS_FINAL
 #		define LGE_FINAL 						final
+#	else
+#		define LGE_FINAL
 #	endif
 
 #	ifdef LGE_HAS_DECLTYPE
@@ -1640,21 +1667,11 @@ LGE_CUDA_FUNC_DEF LGE_INLINE LGE_API int endianness(void) {
 	number.data[3] = 0x03;
 
 	switch (number.value) {
-	case UINT32_C(0x00010203):
-		return ENDIAN_BIG;
-		break;
-	case UINT32_C(0x03020100):
-		return ENDIAN_LITTLE;
-		break;
-	case UINT32_C(0x02030001):
-		return ENDIAN_BIG_WORD;
-		break;
-	case UINT32_C(0x01000302):
-		return ENDIAN_LITTLE_WORD;
-		break;
-	default:
-		return ENDIAN_UNKNOWN;
-		break;
+		case UINT32_C(0x00010203): return ENDIAN_BIG;
+		case UINT32_C(0x03020100): return ENDIAN_LITTLE;
+		case UINT32_C(0x02030001): return ENDIAN_BIG_WORD;
+		case UINT32_C(0x01000302): return ENDIAN_LITTLE_WORD;
+		default:				   return ENDIAN_UNKNOWN;
 	}
 }
 

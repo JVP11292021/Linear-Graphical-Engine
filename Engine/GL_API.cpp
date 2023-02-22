@@ -35,15 +35,15 @@ LGE_CUDA_FUNC_DECL void GlRenderAPI::draw(VertexArray* VAO) {
 }
 
 // =====================================================================
-// GlTexture class
+// GlTexture2D class
 // =====================================================================
 
-LGE_CUDA_FUNC_DECL void GlTexture::destroy() {
+LGE_CUDA_FUNC_DECL void GlTexture2D::destroy() {
 	__glDebug(glDeleteTextures(1, &this->ID));
 	this->ID = 0;
 }
 
-GlTexture::GlTexture(const std::string& path) 
+GlTexture2D::GlTexture2D(const std::string& path) 
 #ifdef	LGE_HAS_INITIALIZER_LIST
 	: localBuffer(nullptr), width(0), height(0), bbp(0)
 #endif
@@ -76,11 +76,11 @@ GlTexture::GlTexture(const std::string& path)
 		free(this->localBuffer);
 }
 
-GlTexture::~GlTexture() {
+GlTexture2D::~GlTexture2D() {
 	this->destroy();
 }
 
-GlTexture::GlTexture(GlTexture&& tex) noexcept
+GlTexture2D::GlTexture2D(GlTexture2D&& tex) noexcept
 #ifdef	LGE_HAS_INITIALIZER_LIST
 	: localBuffer(tex.localBuffer), width(tex.width), height(tex.height), bbp(tex.bbp)
 #endif
@@ -98,7 +98,7 @@ GlTexture::GlTexture(GlTexture&& tex) noexcept
 	tex.ID = NULL;
 }
 
-LGE_CUDA_FUNC_DECL GlTexture& GlTexture::operator = (GlTexture&& tex) noexcept {
+LGE_CUDA_FUNC_DECL GlTexture2D& GlTexture2D::operator = (GlTexture2D&& tex) noexcept {
 	if (this != &tex) {
 		this->destroy();
 		
@@ -115,12 +115,12 @@ LGE_CUDA_FUNC_DECL GlTexture& GlTexture::operator = (GlTexture&& tex) noexcept {
 	return *this;
 }
 
-LGE_CUDA_FUNC_DECL void GlTexture::bind(uint32 slot) const {
+LGE_CUDA_FUNC_DECL void GlTexture2D::bind(uint32 slot) const {
 	__glDebug(glActiveTexture(GL_TEXTURE0 + slot));
 	__glDebug(glBindTexture(GL_TEXTURE_2D, this->ID));
 }
 
-LGE_CUDA_FUNC_DECL void GlTexture::unbind() const {
+LGE_CUDA_FUNC_DECL void GlTexture2D::unbind() const {
 	__glDebug(glBindTexture(GL_TEXTURE_2D, 0));
 }
 

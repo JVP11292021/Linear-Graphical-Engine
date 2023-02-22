@@ -38,9 +38,14 @@ public:
 	LGE_CUDA_FUNC_DECL LGE_INLINE LGE_STATIC mFLOAT getMouseX() { return instance->getMouseXImpl(); }
 	LGE_CUDA_FUNC_DECL LGE_INLINE LGE_STATIC mFLOAT getMouseY() { return instance->getMouseYImpl(); }
 	LGE_CUDA_FUNC_DECL LGE_INLINE LGE_STATIC core::Tuple<mFLOAT> getMousePos() { return instance->getMousePosImpl(); }
-
-
 };
+
+__declspec(selectany) mBOOL (*isMouseButtonPressed)(mINT) = &Input::isMouseButtonPressed;
+__declspec(selectany) mBOOL (*isKeyPressed)(mINT) = &Input::isKeyPressed;
+__declspec(selectany) mFLOAT(*mouseX)() = &Input::getMouseX;
+__declspec(selectany) mFLOAT(*mouseY)() = &Input::getMouseY;
+__declspec(selectany) core::Tuple<mFLOAT> (*mousePos)() = &Input::getMousePos;
+
 
 _LGE_END_NP_LGE_HID
 

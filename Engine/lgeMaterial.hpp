@@ -66,8 +66,8 @@ public:
 
 };
 
-LGE_API typedef Material* MaterialRef;
-LGE_API typedef MaterialInstance* MaterialInstanceRef;
+LGE_API typedef ref<Material> MaterialRef;
+LGE_API typedef ref<MaterialInstance> MaterialInstanceRef;
 
 _LGE_END_NP_LGE_GFX
 

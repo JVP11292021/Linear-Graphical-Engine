@@ -16,9 +16,14 @@
 
 #include "engine_setup.h"
 
-#include <exception>
-#include <assert.h>
-#include <stdio.h>
+#include <iostream>
+#include <string>
+
+/*Macro to format the exceptions in a more readable and understandable way.*/
+#define lgeFORMAT_EXCEPTION(_L, _F, _M) std::string("Exception thrown at: ") + std::to_string(_L) +\
+										std::string("\n------------------------------------------\n") + std::string("File: ") + std::string(	 _F) +\
+										std::string("\n------------------------------------------\n") + std::string("Info: ") + std::string(	 _M) +\
+										std::string("\n------------------------------------------\n")
 
 _LGE_BEGIN_NP_LGE
 
@@ -30,6 +35,8 @@ template <typename T>
 class LGE_API LgeException {
 protected:
 	T* _root;
+	uint32 line;
+	istr file;
 
 public: 
 
@@ -37,6 +44,14 @@ public:
 	/// 
 	/// </summary>
 	LgeException() {
+		this->line = 0;
+		this->file = "";
+		this->_root = static_cast<T*>(this);
+	}
+
+	LgeException(uint32 line, istr file) {
+		this->line = line;
+		this->file = file;
 		this->_root = static_cast<T*>(this);
 	}
 
@@ -65,7 +80,7 @@ public:
 	/// 
 	/// </summary>
 	/// <returns></returns>
-	LGE_CUDA_FUNC_DEF LGE_INLINE virtual char* traceback() = 0;
+	LGE_CUDA_FUNC_DEF LGE_INLINE virtual std::string traceback() = 0;
 
 	/// <summary>
 	/// 
@@ -82,7 +97,7 @@ public:
 /// </summary>
 class LGE_API Exception : public LgeException<Exception> {
 private:
-	char* message;
+	std::string message;
 
 public:
 	/// <summary>
@@ -94,15 +109,19 @@ public:
 	/// 
 	/// </summary>
 	/// <param name="msg"></param>
-	Exception(char* msg);
+	Exception(str msg);
 
-	~Exception();
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="msg"></param>
+	Exception(uint32 line, istr file, str msg);
 
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <returns></returns>
-	LGE_CUDA_FUNC_DEF LGE_INLINE char* traceback()
+	LGE_CUDA_FUNC_DEF LGE_INLINE std::string traceback()
 #	ifdef LGE_HAS_OVERRIDE
 		override;
 #	else
@@ -126,7 +145,7 @@ public:
 /// </summary>
 class LGE_API ArrayOutOfBounds : public LgeException<ArrayOutOfBounds> {
 private:
-	char* message;
+	std::string message;
 
 public:
 	/// <summary>
@@ -138,15 +157,19 @@ public:
 	/// 
 	/// </summary>
 	/// <param name="msg"></param>
-	ArrayOutOfBounds(char* msg);
+	ArrayOutOfBounds(str msg);
 
-	~ArrayOutOfBounds();
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="msg"></param>
+	ArrayOutOfBounds(uint32 line, istr file, str msg);
 
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <returns></returns>
-	LGE_CUDA_FUNC_DEF LGE_INLINE char* traceback()
+	LGE_CUDA_FUNC_DEF LGE_INLINE std::string traceback()
 #	ifdef LGE_HAS_OVERRIDE
 		override;
 #	else
@@ -170,7 +193,7 @@ public:
 /// </summary>
 class LGE_API NullPtrException : public LgeException<NullPtrException> {
 private:
-	char* message;
+	std::string message;
 
 public:
 	/// <summary>
@@ -182,15 +205,19 @@ public:
 	/// 
 	/// </summary>
 	/// <param name="msg"></param>
-	NullPtrException(char* msg);
+	NullPtrException(str msg);
 
-	~NullPtrException();
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="msg"></param>
+	NullPtrException(uint32 line, istr file, str msg);
 
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <returns></returns>
-	LGE_CUDA_FUNC_DEF LGE_INLINE char* traceback()
+	LGE_CUDA_FUNC_DEF LGE_INLINE std::string traceback()
 #	ifdef LGE_HAS_OVERRIDE
 		override;
 #	else
@@ -214,7 +241,7 @@ public:
 /// </summary>
 class LGE_API MemoryException : public LgeException<MemoryException> {
 private:
-	char* message;
+	std::string message;
 
 public:
 	/// <summary>
@@ -226,15 +253,19 @@ public:
 	/// 
 	/// </summary>
 	/// <param name="msg"></param>
-	MemoryException(char* msg);
+	MemoryException(str msg);
 
-	~MemoryException();
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="msg"></param>
+	MemoryException(uint32 line, istr file, str msg);
 
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <returns></returns>
-	LGE_CUDA_FUNC_DEF LGE_INLINE char* traceback()
+	LGE_CUDA_FUNC_DEF LGE_INLINE std::string traceback()
 #	ifdef LGE_HAS_OVERRIDE
 		override;
 #	else
@@ -259,7 +290,7 @@ public:
 /// </summary>
 class LGE_API NumberFormatException : public LgeException<NumberFormatException> {
 private:
-	char* message;
+	std::string message;
 
 public:
 	/// <summary>
@@ -271,15 +302,19 @@ public:
 	/// 
 	/// </summary>
 	/// <param name="msg"></param>
-	NumberFormatException(char* msg);
+	NumberFormatException(str msg);
 
-	~NumberFormatException();
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="msg"></param>
+	NumberFormatException(uint32 line, istr file, str msg);
 
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <returns></returns>
-	LGE_CUDA_FUNC_DEF LGE_INLINE char* traceback()
+	LGE_CUDA_FUNC_DEF LGE_INLINE std::string traceback()
 #	ifdef LGE_HAS_OVERRIDE
 		override;
 #	else
@@ -304,7 +339,7 @@ public:
 /// </summary>
 class LGE_API FileSystemException : public LgeException<FileSystemException> {
 private:
-	char* message;
+	std::string message;
 
 public:
 	/// <summary>
@@ -316,15 +351,19 @@ public:
 	/// 
 	/// </summary>
 	/// <param name="msg"></param>
-	FileSystemException(char* msg);
+	FileSystemException(str msg);
 
-	~FileSystemException();
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="msg"></param>
+	FileSystemException(uint32 line, istr file, str msg);
 
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <returns></returns>
-	LGE_CUDA_FUNC_DEF LGE_INLINE char* traceback()
+	LGE_CUDA_FUNC_DEF LGE_INLINE std::string traceback()
 #	ifdef LGE_HAS_OVERRIDE
 		override;
 #	else

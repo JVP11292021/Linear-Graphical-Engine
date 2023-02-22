@@ -14,14 +14,18 @@ public:
 	ExampleLayer()
 		: ILayer("Example")
 	{
-		//std::cout <<wglGetCurrentDC();
 		this->camera = lge::gfx::OrthoCam(-1.6F, 1.6F, -0.9F, 0.9F);
 
-		f32 vertices[3 * 3] = {
-			-0.5F, -0.5F, 0.0F, //0.8F, 0.2F, 0.8F, 1.0F,
-			 0.5F, -0.5F, 0.0F, //0.2F, 0.3F, 0.8F, 1.0f,
-			 0.0F,  0.5F, 0.0F, //0.8F, 0.8F, 0.2F, 1.0F,
+		f32 vertices[4 * 9] = {
+			-0.5F, -0.5F, 0.0F,		0.8F, 0.2F, 0.8F, 1.0F,		0.0F, 0.0F,
+			 0.5F, -0.5F, 0.0F,		0.2F, 0.3F, 0.8F, 1.0f,		1.0F, 0.0F,
+			 0.5F,  0.5F, 0.0F,		0.8F, 0.8F, 0.2F, 1.0F,		1.0F, 1.0F,
+			-0.5F,  0.5F, 0.0F,		0.8F, 0.8F, 0.2F, 1.0F,		0.0F, 1.0F,
 		};
+
+		//-0.5F, -0.5F, 0.0F, 0.8F, 0.2F, 0.8F, 1.0F,
+		//	0.5F, -0.5F, 0.0F, 0.2F, 0.3F, 0.8F, 1.0f,
+		//	0.0F, 0.5F, 0.0F, 0.8F, 0.8F, 0.2F, 1.0F,
 
 		uint32 indeces[3] = { 0, 1, 2 };
 
@@ -30,7 +34,8 @@ public:
 
 		lge::gfx::vbl layout = {
 			{lge::gfx::glShaderDataTypes::vec3, std::string("a_Position")},
-			//{lge::gfx::glShaderDataTypes::vec4, std::string("a_Color")},
+			{lge::gfx::glShaderDataTypes::vec4, std::string("a_Color")},
+			{lge::gfx::glShaderDataTypes::vec2, std::string("a_TexCoord")},
 		};
 
 		VBO->setLayout(layout);
@@ -40,18 +45,15 @@ public:
 		VAO->setIndexBuffer(IBO.get());
 
 		shader.reset(lge::gfx::Shader::create(std::string("../shaders/basic.glsl")));
-
-		//lge::gfx::MaterialRef material = new lge::gfx::Material(this->shader.get());
-		//lge::gfx::MaterialInstanceRef mi = lge::gfx::MaterialInstanceRef(material);
 		
 	}
 
 	void onUpdate(lge::Timestep ts) override {
 		lge::gfx::RenderCommand::clear();
-		lge::gfx::RenderCommand::setClearColor({ 0.6F, 0.8F, 0.44F, 0.5F });
+		lge::gfx::RenderCommand::setClearColor(lge::to_rgb(0xFF6677)); 
 		
-		//this->camera.setPos({ 0.5F, 0.5F, 0.0F });
-		//this->camera.setRotation(45.0F);
+		this->camera.setPos({ 0.5F, 0.5F, 0.0F });
+		this->camera.setRotation(45.0F);
 
 		lge::gfx::Renderer::beginScene(this->camera);
 
@@ -63,6 +65,7 @@ public:
 	void onImGuiRender() override {
 		ImGui::Begin("Test");
 		ImGui::Text("Hello engine");
+		ImGui::Button("Test button!");
 		ImGui::End();
 	}
 
