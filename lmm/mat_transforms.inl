@@ -442,6 +442,16 @@ LMM_FUNC_DECL LMM_CONSTEXPR Mat<T, 4, 4> translate(const Mat<T, 4, 4>& m, const 
 	return result;
 }
 
+template <typename T>
+LMM_FUNC_DECL LMM_CONSTEXPR Mat<T, 4, 4> scale(const Mat<T, 4, 4>& m, const Vec<T, 3>& v) {
+	Mat<T, 4, 4> result;
+	result[0] = m[0] * v[0];
+	result[1] = m[1] * v[1];
+	result[2] = m[2] * v[2];
+	result[3] = m[3];
+	return result;
+}
+
 #ifndef LMM_EXTERNAL_TEMPLATE
 #include "mat_transforms.inl"
 #endif

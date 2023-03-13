@@ -119,6 +119,9 @@ LMM_FUNC_DECL LMM_CONSTEXPR Mat<T, 4, 4> reverse(const Mat<T, 4, 4>&);
 template <typename T>
 LMM_FUNC_DECL LMM_CONSTEXPR Mat<T, 4, 4> translate(const Mat<T, 4, 4>&, const Vec<T, 3>&);
 
+template <typename T>
+LMM_FUNC_DECL LMM_CONSTEXPR Mat<T, 4, 4> scale(const Mat<T, 4, 4>&, const Vec<T, 3>&);
+
 #ifndef LMM_EXTERNAL_TEMPLATE
 #include "mat_transforms.inl"
 #endif

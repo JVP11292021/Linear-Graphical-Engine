@@ -9,11 +9,20 @@ private:
 	lge::ref<lge::gfx::VertexBuffer> VBO;
 
 	lge::gfx::OrthoCam camera;
-	
+	lmm::vec3 camPos = lmm::vec3(0.0F, 0.0F, 0.0F);
+	float camMoveSpeed = 30.0f;
+
+	float camRotation = 0.0f;
+	float camRotationSpeed = 180.0f;
+
 public:
 	ExampleLayer()
 		: ILayer("Example")
 	{
+		lge::core::RefPtr<int> ref(new int(5));
+		std::cout << *ref << std::endl;
+		ref.reset(new int(9));
+		std::cout << *ref << std::endl;
 		this->camera = lge::gfx::OrthoCam(-1.6F, 1.6F, -0.9F, 0.9F);
 
 		f32 vertices[4 * 9] = {
@@ -23,11 +32,10 @@ public:
 			-0.5F,  0.5F, 0.0F,		0.8F, 0.8F, 0.2F, 1.0F,		0.0F, 1.0F,
 		};
 
-		//-0.5F, -0.5F, 0.0F, 0.8F, 0.2F, 0.8F, 1.0F,
-		//	0.5F, -0.5F, 0.0F, 0.2F, 0.3F, 0.8F, 1.0f,
-		//	0.0F, 0.5F, 0.0F, 0.8F, 0.8F, 0.2F, 1.0F,
-
-		uint32 indeces[3] = { 0, 1, 2 };
+		uint32 indeces[2 * 3] = {
+			0, 1, 3,
+			1, 2, 3
+		};
 
 		VAO.reset(lge::gfx::vao::create());
 		VBO.reset(lge::gfx::vbo::create(vertices, sizeof(vertices)));
@@ -49,15 +57,28 @@ public:
 	}
 
 	void onUpdate(lge::Timestep ts) override {
+		if (lge::isKeyPressed(LGE_KEY_LEFT))
+			this->camPos.x -= this->camMoveSpeed * ts;
+		else if (lge::isKeyPressed(LGE_KEY_RIGHT))
+			this->camPos.x += this->camMoveSpeed * ts;
+		if (lge::isKeyPressed(LGE_KEY_UP))
+			this->camPos.y += this->camMoveSpeed * ts;
+		else if (lge::isKeyPressed(LGE_KEY_DOWN))
+			this->camPos.y -= this->camMoveSpeed * ts;
+		if (lge::isKeyPressed(LGE_KEY_A))
+			this->camRotation += this->camRotationSpeed * ts;
+		if (lge::isKeyPressed(LGE_KEY_D))
+			this->camRotation -= this->camRotationSpeed * ts;
+
 		lge::gfx::RenderCommand::clear();
 		lge::gfx::RenderCommand::setClearColor(lge::to_rgb(0xFF6677)); 
-		
-		this->camera.setPos({ 0.5F, 0.5F, 0.0F });
-		this->camera.setRotation(45.0F);
+
+		this->camera.setPos(this->camPos);
+		this->camera.setRotation(this->camRotation);
 
 		lge::gfx::Renderer::beginScene(this->camera);
 
-		lge::gfx::Renderer::submit(this->shader.get(), this->VAO.get());
+		lge::gfx::Renderer::submit(this->shader.get(), this->VAO.get(), lmm::scale(lmm::mat4(1.0f), lmm::vec3(1.5f, 1.5f, 1.5f)));
 
 		lge::gfx::Renderer::endScene();
 	}

@@ -139,12 +139,14 @@ public:
 };
 
 template <typename T>
-LGE_CUDA_FUNC_DECL LGE_INLINE SmartPtr<T>& make_smart(size_t size, T* ptr) {
+LGE_CUDA_FUNC_DECL LGE_INLINE 
+SmartPtr<T>& make_smart(size_t size, T* ptr) {
 	return SmartPtr<T>(size, ptr);
 }
 
 template <typename T>
-LGE_CUDA_FUNC_DECL LGE_INLINE SmartPtr<T>& make_smart(T* ptr) {
+LGE_CUDA_FUNC_DECL LGE_INLINE
+SmartPtr<T>& make_smart(T* ptr) {
 	return SmartPtr<T>(ptr);
 }
 

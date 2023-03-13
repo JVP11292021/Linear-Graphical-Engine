@@ -168,6 +168,8 @@ public:
 	LGE_CUDA_FUNC_DECL bool includes(T);
 	LGE_CUDA_FUNC_DECL void pprint();
 
+	LGE_CUDA_FUNC_DECL LGE_INLINE const T* c_arr() const { return this->arr; }
+
 	// Operator overloaded functions
 
 	LGE_CUDA_FUNC_DECL T& operator [] (uint32);

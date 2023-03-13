@@ -12,21 +12,24 @@
 */
 
 #include "lgeRenderer.hpp"
+#include <iostream>
 
 _LGE_BEGIN_NP_LGE_GFX
 
-//Renderer::_sceneData* Renderer::data = new Renderer::_sceneData;
+Renderer::_sceneData* Renderer::data = new Renderer::_sceneData;
 
 LGE_CUDA_FUNC_DECL void Renderer::beginScene(OrthoCam& cam) {
-	//Renderer::data->viewProjection = cam.getViewProjection();
+	Renderer::data->viewProjection = cam.getViewProjection();
 }
 
 LGE_CUDA_FUNC_DECL void Renderer::endScene() {
 
 }
 
-LGE_CUDA_FUNC_DECL void Renderer::submit(const Shader* shader, VertexArray* VAO) {
+LGE_CUDA_FUNC_DECL void Renderer::submit(Shader* shader, VertexArray* VAO, const lmm::mat4& transform) {
 	shader->bind();
+	shader->setMat4("u_Transform", transform);
+
 	VAO->bind();
 	RenderCommand::draw(VAO);
 }

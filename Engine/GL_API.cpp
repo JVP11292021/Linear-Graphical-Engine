@@ -464,7 +464,7 @@ LGE_CUDA_FUNC_DECL void GlShader::setFloat(const std::string& name, f32 value) {
 }
 
 LGE_CUDA_FUNC_DECL void GlShader::setVec2(const std::string& name, const lmm::vec2& value) {
-	__glDebug(glUniform2fv(this->uniformLocation(name.c_str()), 1, lmm::value_ptr(value)));
+	__glDebug(glUniform2f(this->uniformLocation(name.c_str()), value.x, value.y));
 }
 
 LGE_CUDA_FUNC_DECL void GlShader::setVec2(const std::string& name, f32 x, f32 y) {
@@ -472,7 +472,7 @@ LGE_CUDA_FUNC_DECL void GlShader::setVec2(const std::string& name, f32 x, f32 y)
 }
 
 LGE_CUDA_FUNC_DECL void GlShader::setVec3(const std::string& name, const lmm::vec3& value) {
-	__glDebug(glUniform3fv(this->uniformLocation(name.c_str()), 1, lmm::value_ptr(value)));
+	__glDebug(glUniform3f(this->uniformLocation(name.c_str()), value.x, value.y, value.z));
 }
 
 LGE_CUDA_FUNC_DECL void GlShader::setVec3(const std::string& name, f32 x, f32 y, f32 z) {
@@ -480,7 +480,7 @@ LGE_CUDA_FUNC_DECL void GlShader::setVec3(const std::string& name, f32 x, f32 y,
 }
 
 LGE_CUDA_FUNC_DECL void GlShader::setVec4(const std::string& name, const lmm::vec4& value) {
-	__glDebug(glUniform4fv(this->uniformLocation(name.c_str()), 1, lmm::value_ptr(value)));
+	__glDebug(glUniform4f(this->uniformLocation(name.c_str()), value.x, value.y, value.z, value.w));
 }
 
 LGE_CUDA_FUNC_DECL void GlShader::setVec4(const std::string& name, f32 x, f32 y, f32 z, f32 w) {
@@ -488,15 +488,15 @@ LGE_CUDA_FUNC_DECL void GlShader::setVec4(const std::string& name, f32 x, f32 y,
 }
 
 LGE_CUDA_FUNC_DECL void GlShader::setMat2(const std::string& name, const lmm::mat2f& mat) {
-	//__glDebug(glUniformMatrix2fv(this->uniformLocation(name.c_str()), 1, GL_FALSE, lmm::value_ptr(mat)));
+	__glDebug(glUniformMatrix2fv(this->uniformLocation(name.c_str()), 1, GL_FALSE, lmm::value_ptr(mat)));
 }
 
 LGE_CUDA_FUNC_DECL void GlShader::setMat3(const std::string& name, const lmm::mat3f& mat) {
-	//__glDebug(glUniformMatrix3fv(this->uniformLocation(name.c_str()), 1, GL_FALSE, lmm::value_ptr(mat)));
+	__glDebug(glUniformMatrix3fv(this->uniformLocation(name.c_str()), 1, GL_FALSE, lmm::value_ptr(mat)));
 }
 
 LGE_CUDA_FUNC_DECL void GlShader::setMat4(const std::string& name, const lmm::mat4f& mat) {
-	//__glDebug(glUniformMatrix4fv(this->uniformLocation(name.c_str()), 1, GL_FALSE, lmm::value_ptr(mat)));
+	__glDebug(glUniformMatrix4fv(this->uniformLocation(name.c_str()), 1, GL_FALSE, lmm::value_ptr(mat)));
 }
 
 // =====================================================================

@@ -15,99 +15,65 @@
 #define __LGE_UNIQUE_PTR__
 
 #include "engine_setup.h"
-#include "lgeExceptions.hpp"
 
 _LGE_BEGIN_NP_LGE_CORE
 
-template <typename T>
+template<typename T>
 class UniquePtr {
-private:
-	T* t_ptr;
-	size_t size;
-
-	LGE_CUDA_FUNC_DECL void destruct() {
-		if (this->t_ptr != nullptr) {
-			if (sizeof(*t_ptr) == size)
-				delete t_ptr;
-			else
-				delete[] t_ptr;
-		}
-	}
-
 public:
-	UniquePtr() {
-		this->t_ptr = nullptr;
-		this->size = 0;
-	}
+    explicit UniquePtr(T* ptr = nullptr) : this->ptr(ptr) {}
 
-	explicit UniquePtr(T* t_ptr) {
-		this->t_ptr = t_ptr;
-		this->size = sizeof(T);
-	}
+    ~UniquePtr() {
+        reset();
+    }
 
-	explicit UniquePtr(size_t nBytes, T* t_ptr) {
-		this->t_ptr = t_ptr;
-		this->size = nBytes;
-	}
+    LGE_CLS_NON_COPIABLE(UniquePtr)
 
-	UniquePtr(const UniquePtr& ptr) = delete;
+    UniquePtr(UniquePtr&& other) {
+        this->ptr = other.this->ptr;
+        other.this->ptr = nullptr;
+    }
 
-	UniquePtr(UniquePtr&& d_ptr) {
-		this->destruct();
+    UniquePtr& operator=(UniquePtr&& other) {
+        if (this != &other) {
+            reset();
+            this->ptr = other.this->ptr;
+            other.this->ptr = nullptr;
+        }
+        return *this;
+    }
 
-		this->t_ptr = d_ptr.t_ptr;
-		this->size = d_ptr.size;
-		d_ptr.t_ptr = nullptr;
-	}
+    LGE_CUDA_FUNC_DECL LGE_INLINE T& operator*() const {
+        return *this->ptr;
+    }
 
-	~UniquePtr() {
-		this->destruct();
-		this->t_ptr = nullptr;
-	}
+    LGE_CUDA_FUNC_DECL LGE_INLINE T* operator->() const {
+        return this->ptr;
+    }
 
-	LGE_CUDA_FUNC_DECL void operator = (UniquePtr&& d_ptr) {
-		this->destruct();
+    LGE_CUDA_FUNC_DECL LGE_INLINE T* get() const {
+        return this->ptr;
+    }
 
-		this->t_ptr = d_ptr.t_ptr;
-		this->size = d_ptr.size;
-		d_ptr.t_ptr = nullptr;
-	}
+    LGE_CUDA_FUNC_DECL LGE_INLINE explicit operator bool() const {
+        return this->ptr != nullptr;
+    }
 
-	LGE_CUDA_FUNC_DECL UniquePtr<T>& operator = (UniquePtr<T>& ptr) = delete;
+    LGE_CUDA_FUNC_DECL LGE_INLINE void reset(T* ptr = nullptr) {
+        if (this->ptr != nullptr) {
+            delete this->ptr;
+        }
+        this->ptr = ptr;
+    }
 
-	LGE_CUDA_FUNC_DECL T& operator * () {
-		return *(this->t_ptr);
-	}
-
-	LGE_CUDA_FUNC_DECL T* operator -> () {
-		return this->t_ptr;
-	}
-
-
-	LGE_CUDA_FUNC_DECL T& operator [] (uint32 index) {
-		if (this->size > sizeof(T))
-			return this->t_ptr[index];
-		else
-			throw MemoryException(const_cast<char*>("LGE::MemoryException\n Pointer is not pointing to an array of data."));
-	}
-
-	LGE_CUDA_FUNC_DECL const T operator [] (uint32 index) const {
-		if (this->size < sizeof(T))
-			return this->t_ptr[index];
-		else
-			throw MemoryException(const_cast<char*>("LGE::MemoryException\n Pointer is not pointing to an array of data."));
-	}
-
+private:
+    T* ptr;
 };
 
 template <typename T>
-LGE_CUDA_FUNC_DECL LGE_INLINE UniquePtr<T>& make_unique(T* t_ptr) {
-	return UniquePtr<T>(t_ptr);
-}
-
-template <typename T>
-LGE_CUDA_FUNC_DECL LGE_INLINE UniquePtr<T>& make_unique(size_t nBytes, T* t_ptr) {
-	return UniquePtr<T>(nBytes, t_ptr);
+LGE_CUDA_FUNC_DECL LGE_INLINE 
+UniquePtr<T>& make_unique(T* t_ptr = nullptr) {
+    return UniquePtr<T>(t_ptr);
 }
 
 _LGE_END_NP_LGE_CORE

@@ -23,18 +23,18 @@ _LGE_BEGIN_NP_LGE_GFX
 
 class LGE_API Renderer {
 private:
-	//struct _sceneData {
-	//	lmm::mat4 viewProjection;
-	//};
+	struct _sceneData {
+		lmm::mat4 viewProjection;
+	};
 
-	//LGE_STATIC _sceneData* data;
+	LGE_STATIC _sceneData* data;
 
 public:
 
 	LGE_CUDA_FUNC_DECL LGE_STATIC void beginScene(OrthoCam&);
 	LGE_CUDA_FUNC_DECL LGE_STATIC void endScene();
 
-	LGE_CUDA_FUNC_DECL LGE_STATIC void submit(const Shader*, VertexArray*);
+	LGE_CUDA_FUNC_DECL LGE_STATIC void submit(Shader*, VertexArray*, const lmm::mat4& transform = lmm::mat4(true));
 
 	LGE_CUDA_FUNC_DECL LGE_INLINE LGE_STATIC RenderAPI::API getAPI() { return RenderAPI::getState(); }
  };

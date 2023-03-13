@@ -48,6 +48,7 @@ namespace lmm {
 #include "lgeLogging.hpp"
 #include "lgeSmartPtr.hpp"
 #include "lgeUniquePtr.hpp"
+#include "lgeRefPtr.hpp"
 #include "lgeAllocaters.hpp"
 #include "lgePtrMath.inl"
 #include "lgeExceptions.hpp"
