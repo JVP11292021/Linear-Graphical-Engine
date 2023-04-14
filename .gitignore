@@ -16,6 +16,7 @@
 
 # files
 Resources/*
+__BG__/*
 bin/*
 bin-int/*
 .vs/*

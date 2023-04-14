@@ -437,10 +437,6 @@
 #	define lgeTB							(lgeGB * lgeGB)
 #	define lgePB							(lgeTB * lgeTB)
 
-#	define AND		 						&
-#	define OR		  						|
-#	define XOR								^
-
 // Screen resolution
 #	if LGE_PLATFORM == LGE_PLATFORM_WINDOWS
 #		define lgeSRXW (GetSystemMetrics(SM_CXSCREEN))

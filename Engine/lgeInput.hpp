@@ -44,10 +44,10 @@ public:
 _LGE_END_NP_LGE_HID
 
 _LGE_BEGIN_NP_LGE
-__declspec(selectany) hid::mBOOL(*isMouseButtonPressed)(hid::mINT) = &hid::Input::isMouseButtonPressed;
-__declspec(selectany) hid::mBOOL(*isKeyPressed)(hid::mINT) = &hid::Input::isKeyPressed;
-__declspec(selectany) hid::mFLOAT(*mouseX)() = &hid::Input::getMouseX;
-__declspec(selectany) hid::mFLOAT(*mouseY)() = &hid::Input::getMouseY;
-__declspec(selectany) core::Tuple<hid::mFLOAT>(*mousePos)() = &hid::Input::getMousePos;
+__declspec(selectany) LGE_API hid::mBOOL(*isMouseButtonPressed)(hid::mINT) = &hid::Input::isMouseButtonPressed;
+__declspec(selectany) LGE_API hid::mBOOL(*isKeyPressed)(hid::mINT) = &hid::Input::isKeyPressed;
+__declspec(selectany) LGE_API hid::mFLOAT(*mouseX)() = &hid::Input::getMouseX;
+__declspec(selectany) LGE_API hid::mFLOAT(*mouseY)() = &hid::Input::getMouseY;
+__declspec(selectany) LGE_API core::Tuple<hid::mFLOAT>(*mousePos)() = &hid::Input::getMousePos;
 _LGE_END_NP_LGE
 #endif

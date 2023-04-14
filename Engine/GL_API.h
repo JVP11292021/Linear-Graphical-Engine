@@ -22,12 +22,12 @@
 #include "lgeTexture.hpp"
 #include "lgeVertexArray.hpp"
 #include "lgeRenderAPI.hpp"
+#include "vendor/stb_image.h"
 
 #include <glad/glad.h>
 #include <unordered_map>
 #include <string>
 #include <../lmm/lmm.h>
-#include <stb/stb_image.h>
 
 #if LGE_BUILD == LGE_DEBUG_BUILD
 #	define __glDebug(x) lge::gfx::glClearError(); x; lgeASSERT(lge::gfx::glLogCall(#x, __FILE__, __LINE__))
@@ -134,6 +134,7 @@ public:
 
 class LGE_API GlRenderAPI : public RenderAPI {
 public:
+	LGE_CUDA_FUNC_DECL void init() override;
 	LGE_CUDA_FUNC_DECL void setClearColor(const lmm::vec4&) override;
 	LGE_CUDA_FUNC_DECL void clear() override;
 

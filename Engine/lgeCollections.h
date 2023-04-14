@@ -15,7 +15,6 @@
 #define __LGE_COLLECTIONS__
 
 #include "engine_setup.h"
-#include "lgeSmartPtr.hpp"
 
 #include <istream>
 #include <ostream>
@@ -63,6 +62,37 @@ public:
 	LGE_CUDA_FUNC_DECL LGE_INLINE uint32 length() const { return this->len; }
 	LGE_CUDA_FUNC_DECL LGE_INLINE int32 max_capacity() const { return this->capacity; }
 
+protected:
+	LGE_CUDA_FUNC_DECL virtual void pprint() {}
+};
+
+template <typename T>
+class LGE_API Iterator {
+private:
+	T* ptr_;
+public:
+	LGE_CUDA_FUNC_DECL LGE_INLINE 
+	Iterator(T* ptr) noexcept
+#ifdef LGE_HAS_INITIALIZER_LIST 
+		: ptr_(ptr)
+#endif 
+	{
+#ifndef LGE_HAS_INITIALIZER_LIST
+		this->ptr_ = ptr;
+#endif
+	}
+
+	LGE_CUDA_FUNC_DECL LGE_INLINE 
+	Iterator& operator++() 
+	noexcept { ++this->ptr_; return *this; }
+
+	LGE_CUDA_FUNC_DECL LGE_INLINE 
+	bool operator!=(const Iterator& other) 
+	const noexcept { return this->ptr_ != other.ptr_; }
+
+	LGE_CUDA_FUNC_DECL LGE_INLINE 
+	T& operator*() 
+	const noexcept { return *this->ptr_; }
 };
 
 // =====================================================================
@@ -83,8 +113,7 @@ public:
 	LGE_CUDA_FUNC_DECL LGE_INLINE TL getLast() const { return this->last; }
 
 #ifdef LGE_FORCE_IO_COUPLE
-	LGE_CUDA_FUNC_DECL friend std::ostream& operator << (std::ostream&, const Couple&);
-	LGE_CUDA_FUNC_DECL friend std::istream& operator >> (std::istream&, const Couple&);
+	LGE_CLS_IOSTREAM_OV(Couple)
 #endif
 };
 
@@ -96,8 +125,9 @@ public:
 template <typename T>
 class Tuple : public Collection {
 private:
+	friend class Iterator<T>;
+private:
 	T data[12];
-
 public:
 
 	Tuple();
@@ -108,9 +138,14 @@ public:
 	// operator overloading
 	LGE_CUDA_FUNC_DECL const T operator [] (uint32) const;
 
+	LGE_CUDA_FUNC_DECL LGE_INLINE const T* c_arr() const { return this->data; }
+
+	// Iterator methods
+	LGE_CUDA_FUNC_DECL LGE_INLINE Iterator<T> begin() { return Iterator<T>(&this->data[0]); }
+	LGE_CUDA_FUNC_DECL LGE_INLINE Iterator<T> end() { return Iterator<T>(&this->data[this->len]); }
+
 #ifdef LGE_FORCE_IO_TUPLE
-	LGE_CUDA_FUNC_DECL friend std::ostream& operator << (std::ostream&, const Tuple&);
-	LGE_CUDA_FUNC_DECL friend std::istream& operator >> (std::istream&, const Tuple&);
+	LGE_CLS_IOSTREAM_OV(Tuple)
 #endif
 
 };
@@ -125,6 +160,8 @@ public:
 /// <typeparam name="T"></typeparam>
 template <typename T, uint32 E>
 class Array : public Collection {
+private:
+	friend class Iterator<T>;
 private:
 	T arr[E];
 	uint32 a_begin;
@@ -166,7 +203,7 @@ public:
 	LGE_CUDA_FUNC_DECL bool isOdd(uint32);
 	LGE_CUDA_FUNC_DECL bool isEven(uint32);
 	LGE_CUDA_FUNC_DECL bool includes(T);
-	LGE_CUDA_FUNC_DECL void pprint();
+	LGE_CUDA_FUNC_DECL void pprint() override;
 
 	LGE_CUDA_FUNC_DECL LGE_INLINE const T* c_arr() const { return this->arr; }
 
@@ -178,9 +215,12 @@ public:
 	LGE_CUDA_FUNC_DECL Array operator = (const Array&);
 	LGE_CUDA_FUNC_DECL Array operator = (Array&);
 
+	// Iterator methods
+	LGE_CUDA_FUNC_DECL LGE_INLINE Iterator<T> begin() { return Iterator<T>(&this->arr[0]); }
+	LGE_CUDA_FUNC_DECL LGE_INLINE Iterator<T> end() { return Iterator<T>(&this->arr[E]); }
+
 #ifdef LGE_FORCE_IO_ARRAY
-	LGE_CUDA_FUNC_DECL friend std::ostream& operator << (std::ostream&, const Array&);
-	LGE_CUDA_FUNC_DECL friend std::istream& operator >> (std::istream&, const Array&);
+	LGE_CLS_IOSTREAM_OV(Array)
 #endif
 
 };
@@ -195,6 +235,8 @@ public:
 /// <typeparam name="T"></typeparam>
 template <typename T>
 class List : public Collection {
+private:
+	friend class Iterator<T>;
 private:
 	T* l = (T*)malloc(sizeof(T) * 10);
 private:
@@ -216,7 +258,8 @@ public:
 	LGE_CUDA_FUNC_DECL List<T>& shift();
 	LGE_CUDA_FUNC_DECL List<T>& del(T);
 
-	LGE_CUDA_FUNC_DECL void pprint();
+	LGE_CUDA_FUNC_DECL void pprint() override;
+	LGE_CUDA_FUNC_DECL LGE_INLINE const T* c_arr() const { return this->l; }
 
 	LGE_CUDA_FUNC_DECL LGE_INLINE T first() const { return this->l[0]; }
 	LGE_CUDA_FUNC_DECL LGE_INLINE T last() const { return this->l[this->len]; }
@@ -229,9 +272,12 @@ public:
 	LGE_CUDA_FUNC_DECL List operator = (const List&);
 	LGE_CUDA_FUNC_DECL List operator = (List&);
 
+	// Iterator methods
+	LGE_CUDA_FUNC_DECL LGE_INLINE Iterator<T> begin() { return Iterator<T>(&this->l[0]); }
+	LGE_CUDA_FUNC_DECL LGE_INLINE Iterator<T> end() { return Iterator<T>(&this->l[this->len]); }
+
 #ifdef LGE_FORCE_IO_LIST
-	LGE_CUDA_FUNC_DECL friend std::ostream& operator << (std::ostream&, const List&);
-	LGE_CUDA_FUNC_DECL friend std::istream& operator >> (std::istream&, const List&);
+	LGE_CLS_IOSTREAM_OV(List)
 #endif
 };
 
@@ -286,15 +332,14 @@ public:
 	LGE_CUDA_FUNC_DECL void reverse();
 	LGE_CUDA_FUNC_DECL void removeDuplicates();
 	LGE_CUDA_FUNC_DECL T searchItem(T item);
-	LGE_CUDA_FUNC_DECL sLinkedList& pprint();
+	LGE_CUDA_FUNC_DECL sLinkedList& pprint() override;
 
 	LGE_CUDA_FUNC_DECL T& operator [] (uint32);
 	LGE_CUDA_FUNC_DECL T operator [] (uint32) const;
 	LGE_CUDA_FUNC_DECL sLinkedList operator = (const sLinkedList&);
 
 #ifdef LGE_FORCE_IO_SLINKEDLIST
-	LGE_CUDA_FUNC_DECL friend std::ostream& operator << (std::ostream&, const sLinkedList&);
-	LGE_CUDA_FUNC_DECL friend std::istream& operator >> (std::istream&, const sLinkedList&);
+	LGE_CLS_IOSTREAM_OV(sLinkedList)
 #endif
 
 };
@@ -310,6 +355,8 @@ public:
 template <typename T, uint32 C>
 class  Stack : public Collection {
 private:
+	friend class Iterator<T>;
+private:
 	Array<T, C> sarr = Array<T, C>();
 
 public:
@@ -323,15 +370,20 @@ public:
 	LGE_CUDA_FUNC_DECL LGE_INLINE bool isEmpty();
 	LGE_CUDA_FUNC_DECL T peek();
 	LGE_CUDA_FUNC_DECL Stack& sort();
-	LGE_CUDA_FUNC_DECL Stack& pprint();
+
+	LGE_CUDA_FUNC_DECL void pprint() override;
+	LGE_CUDA_FUNC_DECL LGE_INLINE const T* c_arr() const { return this->sarr.c_arr(); }
 
 	LGE_CUDA_FUNC_DECL T& operator [] (uint32);
 	LGE_CUDA_FUNC_DECL T operator [] (uint32) const;
 	LGE_CUDA_FUNC_DECL Stack operator = (const Stack&);
 
+	// Iterator methods
+	LGE_CUDA_FUNC_DECL LGE_INLINE Iterator<T> begin() { return this->sarr.begin(); }
+	LGE_CUDA_FUNC_DECL LGE_INLINE Iterator<T> end() { return this->sarr.end(); }
+
 #ifdef LGE_FORCE_IO_STACK
-	LGE_CUDA_FUNC_DECL friend std::ostream& operator << (std::ostream&, const Stack&);
-	LGE_CUDA_FUNC_DECL friend std::istream& operator >> (std::istream&, const Stack&);
+	LGE_CLS_IOSTREAM_OV(Stack)
 #endif
 };
 
@@ -345,6 +397,8 @@ public:
 /// <typeparam name="T"></typeparam>
 template <typename T, uint32 C>
 class  Queue : public Collection {
+private:
+	friend class Iterator<T>;
 private:
 	Array<T, C> qarr = Array<T, C>();
 	int32 front;
@@ -360,13 +414,18 @@ public:
 	LGE_CUDA_FUNC_DECL bool isEmpty();
 	LGE_CUDA_FUNC_DECL T getFront();
 	LGE_CUDA_FUNC_DECL T getRear();
-	LGE_CUDA_FUNC_DECL void pprint();
+
+	LGE_CUDA_FUNC_DECL void pprint() override;
+	LGE_CUDA_FUNC_DECL LGE_INLINE const T* c_arr() const { return this->qarr.c_arr(); }
 
 	LGE_CUDA_FUNC_DECL Queue operator = (const Queue&);
 
+	// Iterator methods
+	LGE_CUDA_FUNC_DECL LGE_INLINE Iterator<T> begin() { return this->qarr.begin(); }
+	LGE_CUDA_FUNC_DECL LGE_INLINE Iterator<T> end() { return this->qarr.end(); }
+
 #ifdef LGE_FORCE_IO_QUEUE
-	LGE_CUDA_FUNC_DECL friend std::ostream& operator << (std::ostream&, const Queue&);
-	LGE_CUDA_FUNC_DECL friend std::istream& operator >> (std::istream&, const Queue&);
+	LGE_CLS_IOSTREAM_OV(Queue)
 #endif
 };
 
@@ -420,11 +479,12 @@ _LGE_END_NP_LGE_CORE
 #		include "lgeCollections.inl"
 #	endif
 
-_LGE_BEGIN_NP_LGE
 
 // =====================================================================
 // Collection types
 // =====================================================================
+
+_LGE_BEGIN_NP_LGE
 
 template <typename TF, typename TL>
 using couple = core::Couple<TF, TL>;

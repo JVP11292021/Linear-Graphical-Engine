@@ -7,6 +7,8 @@
 #include "lmm_defs.h"
 #include "types.h"
 
+#include <stdio.h>
+
 #ifndef LMM_CPP_VPTR
 #define LMM_CPP_VPTR
 

@@ -26,6 +26,11 @@ private:
 
 public:
 
+	LGE_CUDA_FUNC_DECL LGE_STATIC LGE_INLINE void init() {
+		R_API->init();
+	}
+
+
 	LGE_CUDA_FUNC_DECL LGE_STATIC LGE_INLINE void setClearColor(const lmm::vec4& color) {
 		R_API->setClearColor(color);
 	}

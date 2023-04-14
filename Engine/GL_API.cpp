@@ -22,6 +22,11 @@ _LGE_BEGIN_NP_LGE_GFX
 // Gl renderer API class
 // =====================================================================
 
+LGE_CUDA_FUNC_DECL void GlRenderAPI::init() {
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
 LGE_CUDA_FUNC_DECL void GlRenderAPI::setClearColor(const lmm::vec4& color) {
 	__glDebug(glClearColor(color.r, color.g, color.b, color.a));
 }
@@ -61,6 +66,18 @@ GlTexture2D::GlTexture2D(const std::string& path)
 	//stbi_set_flip_vertically_on_load(1);
 	//this->localBuffer = stbi_load(this->path.c_str(), &this->width, &this->height, &this->bbp, 4);
 
+	GLenum internalFormat = 0, dataFormat = 0;
+	if (this->bbp == 4) {
+		internalFormat = GL_RGBA8;
+		dataFormat = GL_RGBA;
+	}
+	else if (this->bbp == 3) {
+		internalFormat = GL_RGB8;
+		dataFormat = GL_RGB;
+	}
+	
+	lgeASSERT(internalFormat & dataFormat);
+
 	__glDebug(glGenTextures(1, &this->ID));
 	__glDebug(glBindTexture(GL_TEXTURE_2D, this->ID));
 
@@ -69,7 +86,7 @@ GlTexture2D::GlTexture2D(const std::string& path)
 	__glDebug(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
 	__glDebug(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 
-	__glDebug(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->localBuffer));
+	__glDebug(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, this->width, this->height, 0, dataFormat, GL_UNSIGNED_BYTE, this->localBuffer));
 	__glDebug(glBindTexture(GL_TEXTURE_2D, 0));
 
 	if (this->localBuffer)
@@ -146,6 +163,8 @@ GlVertexBuffer::~GlVertexBuffer() {
 GlVertexBuffer::GlVertexBuffer(GlVertexBuffer&& buffer) noexcept {
 	this->ID = buffer.ID;
 	this->layout = buffer.layout;
+
+	buffer.ID = NULL;
 }
 
 LGE_CUDA_FUNC_DECL GlVertexBuffer& GlVertexBuffer::operator = (GlVertexBuffer&& buffer) noexcept {
@@ -154,6 +173,8 @@ LGE_CUDA_FUNC_DECL GlVertexBuffer& GlVertexBuffer::operator = (GlVertexBuffer&& 
 
 		this->ID = buffer.ID;
 		this->layout = buffer.layout;
+
+		buffer.ID = NULL;
 	}
 
 	return *this;

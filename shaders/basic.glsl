@@ -15,6 +15,7 @@ uniform mat4 u_Transform;
 void main() {
 	v_TexCoords = a_TexCoords;
 	v_Color = a_Color;
+	//gl_Position = vec4(a_Position, 1.0);
 	gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
 };
 

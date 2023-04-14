@@ -31,6 +31,7 @@ public:
 		VULKAN = 3
 	};
 
+	LGE_CUDA_FUNC_DECL virtual void init() = 0;
 	LGE_CUDA_FUNC_DECL virtual void setClearColor(const lmm::vec4&) = 0;
 	LGE_CUDA_FUNC_DECL virtual void clear() = 0;
 

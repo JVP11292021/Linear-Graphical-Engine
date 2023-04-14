@@ -30,6 +30,7 @@ private:
 	LGE_STATIC _sceneData* data;
 
 public:
+	LGE_CUDA_FUNC_DECL LGE_STATIC void init();
 
 	LGE_CUDA_FUNC_DECL LGE_STATIC void beginScene(OrthoCam&);
 	LGE_CUDA_FUNC_DECL LGE_STATIC void endScene();

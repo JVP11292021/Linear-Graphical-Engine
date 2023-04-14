@@ -12,6 +12,7 @@
 */
 
 #include "lgeApplication.hpp"
+#include "lgeRenderer.hpp"
 #include <GLFW/glfw3.h>
 
 #include <iostream>
@@ -24,6 +25,8 @@ Application::Application() {
 	this->instance = this;
 	this->win = IWindow::create();
 	this->win->setEventCallback(lgeBindEvent(Application::onEvent));
+
+	gfx::Renderer::init();
 
 	this->imguiLayer = new ImGuiLayer();
 	this->push_overlay(this->imguiLayer);
@@ -41,7 +44,7 @@ LGE_CUDA_FUNC_DECL void Application::onEvent(hid::Event& e) {
 	std::cout << "Event: " << e << "\n";
 	
 	for (uint32 i = 0; i < this->layerStack.getLen(); i++) {
-		if (e.handled)
+		if (e.isHandled())
 			break;
 		this->layerStack[i]->onEvent(e);
 	}

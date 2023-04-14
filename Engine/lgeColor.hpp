@@ -43,8 +43,8 @@ public:
 
 };
 
-__declspec(selectany) int64 (*to_hex)(const lmm::vec4&) = &Color::toHex;
-__declspec(selectany) lmm::vec4 (*to_rgb)(int64) = &Color::toRGB;
+__declspec(selectany) LGE_API int64 (*to_hex)(const lmm::vec4&) = &Color::toHex;
+__declspec(selectany) LGE_API lmm::vec4 (*to_rgb)(int64) = &Color::toRGB;
 
 _LGE_END_NP_LGE
 

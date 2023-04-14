@@ -221,12 +221,8 @@ Array<T, E>::Array(const std::initializer_list<T>& ilist)
 	this->a_end = curr_end;
 #endif
 
-	for (T item : ilist) {
-		this->arr[this->curr_pos] = item;
-		this->curr_pos++;
-	}
-
-	this->len = curr_pos;
+	for (T item : ilist)
+		this->append(item);
 }
 
 
@@ -447,7 +443,7 @@ LGE_CUDA_FUNC_DECL Array<T, E> Array<T, E>::operator = (const Array& a) {
 
 template <typename T, uint32 E>
 LGE_CUDA_FUNC_DECL Array<T, E> Array<T, E>::operator = (Array& a) {
-	for (int32 i = 0; i < this->capacity - 1; i++)
+	for (int32 i = 0; i < this->capacity; i++)
 		this->arr[i] = a.arr[i];
 	this->a_begin = a.a_begin;
 	this->a_end = a.a_end;
@@ -659,7 +655,7 @@ LGE_CUDA_FUNC_DECL List<T>& List<T>::del(T item) {
 template <typename T>
 LGE_CUDA_FUNC_DECL void List<T>::pprint() {
 	for (int32 x = 0; x < this->len; x++)
-		printf("Index: %i -> value: %i\n", x, this->l[x]);
+		printf("Index: %i -> value: %p\n", x, this->l[x]);
 }
 
 template <typename T>
@@ -697,7 +693,7 @@ LGE_CUDA_FUNC_DECL List<T> List<T>::operator = (const List& l) {
 	this->len = l.len;
 	this->size = l.size;
 
-	for (uint32 i = 0; i < this->size / sizeof(T); i++)
+	for (uint32 i = 0; i < l.length(); i++)
 		this->l[i] = l.l[i];
 
 	return *this;
@@ -708,7 +704,7 @@ LGE_CUDA_FUNC_DECL List<T> List<T>::operator = (List& l) {
 	this->len = l.len;
 	this->size = l.size;
 	
-	for (uint32 i = 0; i < this->size / sizeof(T); i++)
+	for (uint32 i = 0; i < l.length(); i++)
 		this->l[i] = l.l[i];
 
 	return *this;
@@ -1076,10 +1072,10 @@ LGE_CUDA_FUNC_DECL Stack<T, C>& Stack<T, C>::sort() {
 }
 
 template <typename T, uint32 C>
-LGE_CUDA_FUNC_DECL Stack<T, C>& Stack<T, C>::pprint() {
+LGE_CUDA_FUNC_DECL void Stack<T, C>::pprint() {
 	for (int32 x = 0; x < this->top; x++)
 		printf("Index: %i -> value: %i\n", x, this->sarr[x]);
-	return *this;
+	
 }
 
 template <typename T, uint32 C>

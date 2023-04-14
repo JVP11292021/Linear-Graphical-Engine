@@ -49,7 +49,6 @@ namespace lmm {
 #include "lgeSmartPtr.hpp"
 #include "lgeUniquePtr.hpp"
 #include "lgeRefPtr.hpp"
-#include "lgeAllocaters.hpp"
 #include "lgePtrMath.inl"
 #include "lgeExceptions.hpp"
 #include "lgeClock.hpp"
@@ -63,5 +62,7 @@ namespace lmm {
 #include "lgeLayer.hpp"
 #include "lgeLayerStack.hpp"
 #include "lgeImGuiLayer.hpp"
+
+#include "MEM_API.hpp"
 
 #endif

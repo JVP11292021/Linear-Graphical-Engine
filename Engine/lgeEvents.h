@@ -43,9 +43,9 @@ LGE_API enum EventCategory {
 class LGE_API Event {
 private:
 	friend class EventDispatcher;
+	mBOOL handled = LGE_FALSE;
 
 public:
-	mBOOL handled = LGE_FALSE;
 
 	virtual ~Event() = default;
 

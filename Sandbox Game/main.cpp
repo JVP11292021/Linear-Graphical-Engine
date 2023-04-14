@@ -10,22 +10,20 @@ private:
 
 	lge::gfx::OrthoCam camera;
 	lmm::vec3 camPos = lmm::vec3(0.0F, 0.0F, 0.0F);
-	float camMoveSpeed = 30.0f;
+	float camMoveSpeed = 30.0F;
 
-	float camRotation = 0.0f;
-	float camRotationSpeed = 180.0f;
+	float camRotation = 0.0F;
+	float camRotationSpeed = 180.0F;
 
 public:
 	ExampleLayer()
 		: ILayer("Example")
-	{
-		lge::core::RefPtr<int> ref(new int(5));
-		std::cout << *ref << std::endl;
-		ref.reset(new int(9));
-		std::cout << *ref << std::endl;
+	{	
+		
 		this->camera = lge::gfx::OrthoCam(-1.6F, 1.6F, -0.9F, 0.9F);
 
 		f32 vertices[4 * 9] = {
+			// POSITION				COLOR						TEXCORD
 			-0.5F, -0.5F, 0.0F,		0.8F, 0.2F, 0.8F, 1.0F,		0.0F, 0.0F,
 			 0.5F, -0.5F, 0.0F,		0.2F, 0.3F, 0.8F, 1.0f,		1.0F, 0.0F,
 			 0.5F,  0.5F, 0.0F,		0.8F, 0.8F, 0.2F, 1.0F,		1.0F, 1.0F,
@@ -65,21 +63,24 @@ public:
 			this->camPos.y += this->camMoveSpeed * ts;
 		else if (lge::isKeyPressed(LGE_KEY_DOWN))
 			this->camPos.y -= this->camMoveSpeed * ts;
+
 		if (lge::isKeyPressed(LGE_KEY_A))
 			this->camRotation += this->camRotationSpeed * ts;
-		if (lge::isKeyPressed(LGE_KEY_D))
+		if (lge::isKeyPressed(LGE_KEY_D)) 
 			this->camRotation -= this->camRotationSpeed * ts;
 
 		lge::gfx::RenderCommand::clear();
 		lge::gfx::RenderCommand::setClearColor(lge::to_rgb(0xFF6677)); 
 
 		this->camera.setPos(this->camPos);
-		this->camera.setRotation(this->camRotation);
+		//this->camera.setRotation(this->camRotation);
 
 		lge::gfx::Renderer::beginScene(this->camera);
 
-		lge::gfx::Renderer::submit(this->shader.get(), this->VAO.get(), lmm::scale(lmm::mat4(1.0f), lmm::vec3(1.5f, 1.5f, 1.5f)));
-
+		// POSSIBLE lmm::value_ptr ERROR
+		// ERROR: matrices are wrong or something
+		lge::gfx::Renderer::submit(this->shader.get(), this->VAO.get()), lmm::scale(lmm::mat4(1.0f), lmm::vec3(1.5f, 1.5f, 1.5f));
+		
 		lge::gfx::Renderer::endScene();
 	}
 
@@ -92,7 +93,7 @@ public:
 
 	void onEvent(lge::hid::Event& e) override {
 		lge::hid::EventDispatcher dispatcher(e);
-		dispatcher.dispatch<lge::hid::KeyPressedEvent>(lgeBindEvent(ExampleLayer::onKeyPressedEvent));
+		dispatcher.dispatch<lge::hid::KeyPressedEvent>(lgeBindEvent(ExampleLayer::onKeyPressedEvent)); // To bind an event
 	}
 
 	bool onKeyPressedEvent(lge::hid::KeyPressedEvent& e) {
@@ -100,7 +101,6 @@ public:
 			std::cout << "0 example layer" << "\n";
 		else if (e.getKeyCode() == LGE_KEY_1)
 			std::cout << "1 example layer" << "\n";
-
 		return false;
 	}
 };
